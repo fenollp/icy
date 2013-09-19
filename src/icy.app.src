@@ -1,0 +1,13 @@
+{application, icy, [
+	{description, "ICE visualiser using Bullet."},
+	{vsn, "1"},
+	{modules, []},
+	{registered, []},
+	{applications, [
+		kernel,
+		stdlib,
+		cowboy
+	]},
+	{mod, {icy_app, []}},
+	{env, []}
+]}.
