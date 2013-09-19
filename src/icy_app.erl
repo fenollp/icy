@@ -1,8 +1,10 @@
-%% @private
+%% See LICENSE for licensing information.
+%% -*- coding: utf-8 -*-
 -module(icy_app).
 -behaviour(application).
 
-%% API
+%% icy_app: application module of icy.
+
 -export([start/2]).
 -export([stop/1]).
 
@@ -28,3 +30,7 @@ start(_Type, _Args) ->
 
 stop(_State) ->
 	ok.
+
+%% Internals
+
+%% End of Module

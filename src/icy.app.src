@@ -1,3 +1,6 @@
+%% See LICENSE for licensing information.
+%% -*- coding: utf-8 -*-
+
 {application, icy, [
 	{description, "ICE visualiser using Bullet."},
 	{vsn, "1"},

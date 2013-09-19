@@ -1,11 +1,12 @@
-%% @private
+%% See LICENSE for licensing information.
+%% -*- coding: utf-8 -*-
 -module(icy_sup).
 -behaviour(supervisor).
 
-%% API
+%% icy_sup: supervisor for icy.
+
 -export([start_link/0]).
 
-%% Supervisor
 -export([init/1]).
 
 %% API
@@ -14,8 +15,12 @@
 start_link() ->
 	supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
-%% Supervisor
+%% Supervisor API
 
 init([]) ->
 	Procs = [],
 	{ok, {{one_for_one, 10, 10}, Procs}}.
+
+%% Internals
+
+%% End of Module
