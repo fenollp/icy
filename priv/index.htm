@@ -7,7 +7,6 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="/static/bullet.js"></script>
     <script type="text/javascript">
-    // <![CDATA[
     $(document).ready(function(){
         name = 'Icy';
         var bullet;
@@ -16,13 +15,13 @@
             bullet = $.bullet('ws://localhost:8888/bullet');
 
             bullet.onopen = function(){
-                $('#status').text('online');
+                $('#status').text('online').css({backgroundColor: 'green'});
             };
             bullet.ondisconnect = function(){
-                $('#status').text('offline');
+                $('#status').text('offline').css({backgroundColor: 'red'});
             };
             bullet.onclose = function(){
-                $('#status').text('closed');
+                $('#status').text('closed').css({backgroundColor: 'yellow'});
             };
 
             bullet.onheartbeat = function(){
@@ -38,31 +37,25 @@
                 }
             };
         }
+
         open();
-        $('#enable').on('change', function(){
-            if (this.checked){
+
+        $('.enable').on('click', function(){
+            if (bullet == null){
                 open();
-            } else{
+            } else {
                 bullet.close();
                 bullet = null;
             }
         });
-        $('#send').on('click', function(){
-            if (bullet) {   
-                bullet.send('time: ' + name + ' ' + $('#time').text());
-            }
-        });
     });
-    // ]]>
     </script>
 </head>
 
 <body>
     <p>
-        <input type="checkbox" checked="yes" id="enable"></input>
+        <button id="status" class="enable" style="background-color:cyan;">unknown</button>
         <span id="time">Time: unknown</span>
-        <button id="send">Send Time</button>
-        <span id="status">unknown</span>
     </p>
 
     <hr/>
@@ -71,9 +64,9 @@
         <tbody>
             <tr>
                 <td align="center" valign="middle">
-                    <pre id="msg">
-                    Events recap:
-                    </pre>
+<pre id="msg">
+Events recap:
+</pre>
                 </td>
             </tr>
         </tbody>
