@@ -17,7 +17,9 @@
 
 init(_Transport, Req, _Opts, _Active) ->
     io:format("bullet init\n"),
-    register(icy, self()),
+    try register(icy, self())
+    catch error:badarg -> already_registered
+    end,
     {ok, Req, {}}.
 
 stream(<<"ping: ", _Name/binary>>, Req, State) ->
@@ -28,11 +30,11 @@ stream(Data, Req, State) ->
     io:format("stream received “~s”\n", [Data]),
     {ok, Req, State}.
 
-info({pass, Thing}, Req, S) ->
+info({pass, Thing}, Req, State) ->
     %% Only strings and binaries can go through(!)
     [ToPass] = io_lib:format("~p", [Thing]),
     io:format("Passing: ~p\n", [Thing]),
-    {reply, ToPass, Req, S};
+    {reply, ToPass, Req, State};
 
 info(Info, Req, State) ->
     io:format("info received “~p”\n", [Info]),
@@ -40,7 +42,9 @@ info(Info, Req, State) ->
 
 terminate(_Req, _TRef) ->
     io:format("bullet terminate\n"),
-    true = unregister(icy),
+    try unregister(icy)
+    catch error:badarg -> already_unregistered
+    end,
     ok.
 
 %% Internals
