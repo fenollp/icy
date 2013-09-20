@@ -25,14 +25,17 @@
                 $('#status').text('closed');
             };
 
-            bullet.onmessage = function(e){
-                if (e.data != 'pong'){
-                    $('#time').text(e.data);
-                }
-            };
             bullet.onheartbeat = function(){
                 console.log('ping: ' + name);
                 bullet.send('ping: ' + name);
+            };
+
+            // onmessage
+            bullet.onmessage = function(e){
+                if (e.data != 'pong'){
+                    pre = $('#msg')
+                    pre.text(pre.text() + e.data + '\n');
+                }
             };
         }
         open();
@@ -58,8 +61,22 @@
     <p>
         <input type="checkbox" checked="yes" id="enable"></input>
         <span id="time">Time: unknown</span>
-        <span id="status">unknown</span>
         <button id="send">Send Time</button>
+        <span id="status">unknown</span>
     </p>
+
+    <hr/>
+
+    <table width="100%" height="100%">
+        <tbody>
+            <tr>
+                <td align="center" valign="middle">
+                    <pre id="msg">
+                    Events recap:
+                    </pre>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>

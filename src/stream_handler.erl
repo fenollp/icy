@@ -18,8 +18,9 @@
 init(_Transport, Req, _Opts, _Active) ->
     io:format("bullet init\n"),
     register(icy, self()),
-    TRef = erlang:send_after(?PERIOD, self(), refresh),
-    {ok, Req, TRef}.
+    % TRef = erlang:send_after(?PERIOD, self(), refresh),
+    % {ok, Req, TRef}.
+    {ok, Req, {}}.
 
 stream(<<"ping: ", Name/binary>>, Req, State) ->
     io:format("ping ~p received\n", [Name]),
