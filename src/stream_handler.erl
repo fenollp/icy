@@ -18,23 +18,15 @@
 init(_Transport, Req, _Opts, _Active) ->
     io:format("bullet init\n"),
     register(icy, self()),
-    % TRef = erlang:send_after(?PERIOD, self(), refresh),
-    % {ok, Req, TRef}.
     {ok, Req, {}}.
 
-stream(<<"ping: ", Name/binary>>, Req, State) ->
-    io:format("ping ~p received\n", [Name]),
+stream(<<"ping: ", _Name/binary>>, Req, State) ->
+    % io:format("ping ~p received\n", [Name]),
     {reply, <<"pong">>, Req, State};
 
 stream(Data, Req, State) ->
     io:format("stream received “~s”\n", [Data]),
     {ok, Req, State}.
-
-info(refresh, Req, _) ->
-    TRef = erlang:send_after(?PERIOD, self(), refresh),
-    DateTime = cowboy_clock:rfc1123(),
-    %io:format("clock refresh timeout: ~s\n", [DateTime]),
-    {reply, DateTime, Req, TRef};
 
 info({pass, Thing}, Req, S) ->
     %% Only strings and binaries can go through(!)
@@ -48,8 +40,7 @@ info(Info, Req, State) ->
 
 terminate(_Req, _TRef) ->
     io:format("bullet terminate\n"),
-    unregister(icy),
-    % erlang:cancel_timer(_TRef),
+    true = unregister(icy),
     ok.
 
 %% Internals

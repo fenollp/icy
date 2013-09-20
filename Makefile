@@ -24,7 +24,7 @@ rebar:
 	rm -rf ./rebar.d
 
 start: all
-	erl -pa ebin -pa deps/*/ebin -s icy -eval "io:format(\"http://localhost:8888\n\")."
+	erl -pa ebin -pa deps/*/ebin -s icy -eval 'io:format("http://localhost:8888\n").'
 
 debug: rebar
 	./rebar skip_deps=true compile -DTEST
