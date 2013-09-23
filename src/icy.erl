@@ -17,13 +17,15 @@ start() ->
 pass (Thing) ->
     case whereis(?MODULE) of
         undefined -> {error,{unable_to_pass,server_down}};
-        _ -> ?MODULE ! {pass, js_encode(Thing)}
+        _ -> ?MODULE ! {pass, js_encode(Thing)}   %% Only strings and binaries can go through(!)
     end.
 
 %% Internals
 
 %% file:consult/1 JS equivalent.
-js_encode (E) -> "{\"Erlang\": "++ json(E) ++"}".
+js_encode (E) ->
+    io:format("Passing: ~p\n", [E]),
+    "{\"Erlang\": "++ json(E) ++"}".
 
 json (T) when is_tuple(T) ->
     "{ \"Tuple\": "++ json(tuple_to_list(T)) ++" }";

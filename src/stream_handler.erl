@@ -31,10 +31,7 @@ stream(Data, Req, State) ->
     {ok, Req, State}.
 
 info({pass, Thing}, Req, State) ->
-    %% Only strings and binaries can go through(!)
-    [ToPass] = io_lib:format("~p", [Thing]),
-    io:format("Passing: ~p\n", [Thing]),
-    {reply, ToPass, Req, State};
+    {reply, Thing, Req, State};
 
 info(Info, Req, State) ->
     io:format("info received “~p”\n", [Info]),
