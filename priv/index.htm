@@ -33,13 +33,11 @@
             bullet.onmessage = function(e){
                 if (e.data != 'pong'){
                     pre = $('#msg');
-                    obj = jQuery.parseJSON(e.data);
-                    console.log(obj);
-                    data = JSON.stringify(obj);
-                    pre.text(pre.text() + data + '\n');
+                    obj = JSON.stringify(EON(e.data));
+                    pre.text(pre.text() + obj + '\n');
                 }
             };
-        }
+        };
 
         open();
 
@@ -52,6 +50,12 @@
             }
         });
     });
+
+    var EON = function(e_string) {
+        var obj = $.parseJSON(eval(e_string));
+        console.log('RECV: ' + JSON.stringify(obj));
+        return {name: obj["Erlang"]["Tuple"].shift(), data: obj["Erlang"]["Tuple"]};
+    };
     </script>
 </head>
 
