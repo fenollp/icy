@@ -36,7 +36,11 @@ json (A) when is_atom(A) -> %% Boo!
     [$"]++ atom_to_list(A) ++[$"];
 json (Term) ->
     [Str] = io_lib:format("~p", [Term]),
-    Str.
+    case Term of
+        T when is_pid(T); is_function(T) ->
+            [$"]++ Str ++[$"]
+        ; _ -> Str
+    end.
 
 
 is_string (L) ->
