@@ -25,7 +25,9 @@ pass (Thing) ->
 %% file:consult/1 JS equivalent.
 js_encode (E) ->
     io:format("Passing: ~p\n", [E]),
-    "{\"Erlang\": "++ json(E) ++"}".
+    This = "{\"Erlang\": "++ json(E) ++"}",
+    [That] = io_lib:format("~p", [This]),
+    That.
 
 json (T) when is_tuple(T) ->
     "{ \"Tuple\": "++ json(tuple_to_list(T)) ++" }";

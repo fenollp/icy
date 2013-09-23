@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>ICE computings visualiser</title>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/rsc/jquery.min-1.7.2.js"></script>
     <script src="/static/bullet.js"></script>
     <script type="text/javascript">
     $(document).ready(function(){
@@ -74,7 +74,16 @@
     };
 
     var TREE_threads = function(eons){
-        
+        var isntrs = {};
+        eons.forEach(function(eon){
+            if (isntrs[eon.name] === null){
+                isntrs[eon.name] = [];
+            }
+            isntrs[eon.name].push(eon.data);
+        });
+        var root = {data: {type: "ROOT", word: isntrs["tcore"].shift()}, children: []};
+
+
     };
     </script>
 </head>

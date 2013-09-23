@@ -20,6 +20,12 @@ start(_Type, _Args) ->
 				{mimetypes, [
 					{<<".js">>, [<<"application/javascript">>]}
 				]}
+			]},
+			{"/rsc/[...]", cowboy_static, [
+				{directory, {priv_dir, icy, []}},
+				{mimetypes, [
+					{<<".js">>, [<<"application/javascript">>]}
+				]}
 			]}
 		]}
 	]),

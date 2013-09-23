@@ -9,8 +9,6 @@
 -export([info/3]).
 -export([terminate/2]).
 
--define(PERIOD, 1000).
-
 %% API
 
 %% Bullet API
@@ -18,7 +16,7 @@
 init(_Transport, Req, _Opts, _Active) ->
     io:format("bullet init\n"),
     try register(icy, self())
-    catch error:badarg -> already_registered
+    catch error:badarg -> {ok, already_registered}
     end,
     {ok, Req, {}}.
 
@@ -40,7 +38,7 @@ info(Info, Req, State) ->
 terminate(_Req, _TRef) ->
     io:format("bullet terminate\n"),
     try unregister(icy)
-    catch error:badarg -> already_unregistered
+    catch error:badarg -> {ok, already_unregistered}
     end,
     ok.
 

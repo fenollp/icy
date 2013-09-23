@@ -15,7 +15,7 @@ init(_Transport, Req, []) ->
 
 handle(Req, State) ->
     S = code:which(icy),
-    Dir = string:sub_string(S, 1, length(S) - length("ebin.icy.beam")),
+    Dir = string:sub_string(S, 1, length(S) - length("ebin/icy.beam")),
     {ok, Body} = file:read_file(Dir ++ "priv/index.htm"), %% File IO is not an issue.
     {ok, Req2} = cowboy_req:reply(200,
                                   [{<<"content-type">>, <<"text/html">>}],
