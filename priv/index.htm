@@ -8,7 +8,8 @@
     <script src="/static/bullet.js"></script>
     <script type="text/javascript">
     $(document).ready(function(){
-        name = 'Icy';
+        var eons = [];
+        var name = 'Icy';
         var bullet;
 
         var open = function(){
@@ -32,9 +33,10 @@
             // onmessage
             bullet.onmessage = function(e){
                 if (e.data != 'pong'){
-                    pre = $('#msg');
-                    obj = JSON.stringify(EON(e.data));
-                    pre.text(pre.text() + obj + '\n');
+                    var pre = $('#msg');
+                    var obj = EON(e.data);
+                    eons.push(obj);
+                    pre.text(pre.text() + JSON.stringify(obj) + '\n');
                 }
             };
         };
@@ -49,6 +51,20 @@
                 bullet = null;
             }
         });
+
+        $('#tree').on('click', function(){
+            console.log(eons);
+            var pre = $('#msg');
+            if (pre.text() == ''){
+                eons.forEach(function(eon){
+                    pre.text(pre.text() + JSON.stringify(obj) + '\n');
+                });
+            } else {
+                var tree = TREE_threads(eons);
+                alert(tree);
+                pre.text('');
+            }
+        });
     });
 
     var EON = function(e_string) {
@@ -56,15 +72,20 @@
         console.log('RECV: ' + JSON.stringify(obj));
         return {name: obj["Erlang"]["Tuple"].shift(), data: obj["Erlang"]["Tuple"]};
     };
+
+    var TREE_threads = function(eons){
+        
+    };
     </script>
 </head>
 
 <body>
     <p>
         <button id="status" class="enable" style="background-color:cyan;">unknown</button>
+        <button id="tree" style="float:right;">Toggle tree</button>
     </p>
 
-    <hr/>
+    <hr style="clear:both;"/>
 
     <table width="100%" height="100%">
         <tbody>
