@@ -32,8 +32,11 @@
             // onmessage
             bullet.onmessage = function(e){
                 if (e.data != 'pong'){
-                    pre = $('#msg')
-                    pre.text(pre.text() + e.data + '\n');
+                    pre = $('#msg');
+                    obj = jQuery.parseJSON(e.data);
+                    console.log(obj);
+                    data = JSON.stringify(obj);
+                    pre.text(pre.text() + data + '\n');
                 }
             };
         }
@@ -55,7 +58,6 @@
 <body>
     <p>
         <button id="status" class="enable" style="background-color:cyan;">unknown</button>
-        <span id="time">Time: unknown</span>
     </p>
 
     <hr/>
