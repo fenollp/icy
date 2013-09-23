@@ -32,14 +32,12 @@ json (L) when is_list(L) ->
         true -> "\""++ L ++"\"";
         false -> "[ "++ string:join([json(E) || E <- L],", ") ++" ]"
     end;
-json (I) when is_integer(I) ->
-    integer_to_list(I);
-json (F) when is_float(F) ->
-    float_to_list(F);
-json (P) when is_pid(P) ->
-    "{\"Pid\": \""++ pid_to_list(P) ++"\"}";
 json (A) when is_atom(A) -> %% Boo!
-    [$"]++ atom_to_list(A) ++[$"].
+    [$"]++ atom_to_list(A) ++[$"];
+json (Term) ->
+    [Str] = io_lib:format("~p", [Term]),
+    Str.
+
 
 is_string (L) ->
     lists:foldl(
