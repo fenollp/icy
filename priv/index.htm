@@ -96,7 +96,7 @@
         console.log('RECV: ' + JSON.stringify(obj));
         return {name: obj["Erlang"]["Tuple"].shift(),
                 time: obj["Erlang"]["Tuple"].shift(),
-                data: obj["Erlang"]["Tuple"]};
+                data: obj["Erlang"]["Tuple"][0]};
     };
     function EONS_print (eons, tag, placeholder, sep) {
         // Sort eons by timestamp
@@ -112,7 +112,7 @@
     };
     function EON_str (obj){ // Was: JSON.stringify(obj);
         console.log(JSON.stringify(obj));
-        // TODO: s/{"Tuple":[(.*)]}/{\1}/g
+        // TODO: s/ {"Tuple":[(.*)]} / {\1} /g
         return obj.name + ' ---> ' + JSON.stringify(obj.data);
     };
 
