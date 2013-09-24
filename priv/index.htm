@@ -118,9 +118,9 @@
         text = text.replace(/{"Tuple":""}/g, '{}');
         // Heuristics
         text = text.replace(/""/g, '[]');
-        text = text.replace(/<"/g, '<');
-        text = text.replace(/#"/g, '#');
-        text = text.replace(/">/g, '>');
+        text = text.replace(/"</g, '<');
+        text = text.replace(/"#/g, '#');
+        text = text.replace(/>"/g, '>');
         // Note: order of replace-ing matters!
         return obj.name + ' ---> ' + text;
     };
