@@ -6,7 +6,11 @@
 
 -export([start/0]).
 
--export([pass/1]).
+-export([pass/3]).
+-export([time/0]).
+
+-define(G, 1000000000).
+-define(M,    1000000).
 
 %% API
 
@@ -15,16 +19,24 @@ start() ->
 
 
 -type name() :: string() | atom().
--spec pass ({Name::name(), Time::integer(), Thing::term()}) -> any().
+-spec pass (Name::name(), Time::integer(), Thing::term()) -> any().
+%% Time has to be the result of ?MODULE:time/0, executed on the distant module
+%%   in order to preserve synchronicity.
 
-pass (Thing) ->
+pass (Name, Time, Thing) ->
     case whereis(?MODULE) of
         undefined -> {error,{unable_to_pass,server_down}};
-        _ -> ?MODULE ! {pass, js_encode(Thing)}   %% Only strings and binaries can go through(!)
+        _ -> ?MODULE ! {pass, js_encode({Name, Time, Thing})}
     end.
+
+
+time () ->
+    {A, B, C} = os:timestamp(),
+    ?G * A + ?M * B + C.
 
 %% Internals
 
+%% Only strings and binaries can go through(!)
 %% file:consult/1 JS equivalent.
 js_encode (E) ->
     io:format("Passing: ~p\n", [E]),
