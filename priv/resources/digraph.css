@@ -1,0 +1,74 @@
+.ne-O > .label > rect {
+  fill: #00ffd0;
+}
+
+.ne-PERSON > .label > rect {
+  fill: #b997ff;
+}
+
+.ne-DATE > .label > rect {
+  fill: #ffae6a;
+}
+
+.ne-ORGANIZATION > .label > rect {
+  fill: #96c2ff;
+}
+
+.ne-LOCATION > .label > rect {
+  fill: #7e7e7e;
+}
+
+.ne-ORDINAL > .label > rect {
+  fill: #92ff7d;
+}
+
+.ne-NUMBER > .label > rect {
+  fill: #fdb9ff;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden
+}
+
+.main-svg {
+  width: 100%;
+  border: 1px solid #999;
+}
+
+.legend-svg {
+  position: fixed;
+  /*top: 150px;*/
+  /*left: 0;*/
+  /*height: 60px;*/
+  width: 600px;
+  /*width: 100%;*/
+  /*border: 1px solid #999;*/
+}
+
+textarea {
+  border: 1px solid #999999;
+  width: 100%;
+  margin: 5px 0;
+  padding: 3px;
+}
+
+.legend {
+  stroke-width: 3px;
+  stroke: #333;
+  fill: none;
+  opacity: 0.5;
+}
+
+/*.legend-person  > .label > rect {*/
+/*fill: #b997ff;*/
+/*}*/
+
+/*.legend-date  > .label > rect {*/
+/*fill: #ffae6a;*/
+/*}*/
+
+/*.legend-organization > .label > rect {*/
+/*fill: #96c2ff;*/
+/*}*/

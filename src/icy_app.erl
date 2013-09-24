@@ -22,9 +22,11 @@ start(_Type, _Args) ->
 				]}
 			]},
 			{"/rsc/[...]", cowboy_static, [
-				{directory, {priv_dir, icy, []}},
+				{directory, {priv_dir, icy, [<<"resources">>]}},
 				{mimetypes, [
-					{<<".js">>, [<<"application/javascript">>]}
+					{<<".js">>, [<<"application/javascript">>]},
+					{<<".css">>, [<<"text/css">>]},
+					{<<".json">>, [<<"application/json">>]}
 				]}
 			]}
 		]}

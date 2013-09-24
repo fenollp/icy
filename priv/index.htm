@@ -4,7 +4,24 @@
 <head>
     <meta charset="utf-8"/>
     <title>ICE computings visualiser</title>
-    <script src="/rsc/jquery.min-1.7.2.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link rel="stylesheet" type="text/css" href="rsc/jquery-ui-1.9.2.custom.css"/>
+    <link rel="stylesheet" type="text/css" href="rsc/font-awesome.min.css"/>
+
+    <link rel="stylesheet" type="text/css" href="rsc/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="rsc/dagre-d3-simple.css"/>
+    <link rel="stylesheet" type="text/css" href="rsc/digraph.css"/>
+
+    <script type="text/javascript" src="rsc/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript" src="rsc/jquery.form.min.js"></script>
+    <script type="text/javascript" src="rsc/d3.min.js"></script>
+    <script type="text/javascript" src="rsc/dagre.min.js"></script>
+    <script type="text/javascript" src="rsc/dagre-d3-simple.js"></script>
+
+    <script type="text/javascript" src="rsc/tree.json"></script>
+
     <script src="/static/bullet.js"></script>
     <script type="text/javascript">
     $(document).ready(function(){
@@ -55,16 +72,20 @@
         $('#tree').on('click', function(){
             console.log(eons);
             var pre = $('#msg');
-            if (pre.text() == ''){
-                eons.forEach(function(eon){
-                    pre.text(pre.text() + JSON.stringify(obj) + '\n');
-                });
+            var tre = $('#attach');
+            if (false === pre.is(':visible')){
+                tre.toggle();
+                pre.toggle();
             } else {
-                var tree = TREE_threads(eons);
-                alert(tree);
-                pre.text('');
+                tre.toggle();
+                pre.toggle();
+                renderText();
+                //var tree = TREE_threads(eons);
+                //alert(tree);
             }
         });
+        $('#attach').toggle(false);
+
     });
 
     var EON = function(e_string) {
@@ -86,15 +107,18 @@
 
     };
     </script>
-</head>
 
+    <style type="text/css">
+    header { background-color:lightgreen; }
+    </style>
+
+</head>
 <body>
-    <p>
+
+    <header>
         <button id="status" class="enable" style="background-color:cyan;">unknown</button>
         <button id="tree" style="float:right;">Toggle tree</button>
-    </p>
-
-    <hr style="clear:both;"/>
+    </header>
 
     <table width="100%" height="100%">
         <tbody>
@@ -107,5 +131,11 @@ Events recap:
             </tr>
         </tbody>
     </table>
+
+<div id="attach">
+  <svg class="main-svg" id="svg-canvas"></svg>
+</div>
+<script type="text/javascript" src="rsc/make_tree.js"></script>
+
 </body>
 </html>

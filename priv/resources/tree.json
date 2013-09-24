@@ -1,0 +1,60 @@
+var dataParsed = [{
+    "children": [{
+        "children": [{
+            "children": [{
+                "children": [{
+                    "children": [],
+                    "data": {
+                        "ne": "O",
+                        "pos": "NN",
+                        "type": "TK",
+                        "word": "sale"
+                    }
+                }],
+                "data": {
+                    "type": "NN"
+                }
+            }],
+            "data": {
+                "type": "NP"
+            }
+        }, {
+            "children": [{
+                "children": [{
+                    "children": [],
+                    "data": {
+                        "ne": "O",
+                        "pos": "JJ",
+                        "type": "TK",
+                        "word": "petite"
+                    }
+                }],
+                "data": {
+                    "type": "JJ"
+                }
+            }, {
+                "children": [{
+                    "children": [],
+                    "data": {
+                        "ne": "PERSON",
+                        "pos": "NN",
+                        "type": "TK",
+                        "word": "Morue"
+                    }
+                }],
+                "data": {
+                    "type": "NN"
+                }
+            }],
+            "data": {
+                "type": "NP"
+            }
+        }],
+        "data": {
+            "type": "NP"
+        }
+    }],
+    "data": {
+        "type": "ROOT"
+    }
+}];
