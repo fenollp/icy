@@ -9,6 +9,8 @@
 -export([pass/3]).
 -export([time/0]).
 
+-export([test_pass/0]). %% Used when testing the bridge.
+
 -define(G, 1000000000).
 -define(M,    1000000).
 
@@ -19,7 +21,7 @@ start() ->
 
 
 -type name() :: string() | atom().
--spec pass (Name::name(), Time::integer(), Thing::term()) -> any().
+-spec pass (Name::name(), Time::pos_integer(), Thing::term()) -> any().
 %% Time has to be the result of ?MODULE:time/0, executed on the distant module
 %%   in order to preserve synchronicity.
 
@@ -30,9 +32,14 @@ pass (Name, Time, Thing) ->
     end.
 
 
+-spec time () -> N::pos_integer().
 time () ->
     {A, B, C} = os:timestamp(),
     ?G * A + ?M * B + C.
+
+
+test_pass () ->
+    icy:pass(test, icy:time(), "bla").
 
 %% Internals
 
