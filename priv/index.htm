@@ -111,9 +111,15 @@
         });
     };
     function EON_str (obj){ // Was: JSON.stringify(obj);
-        console.log(JSON.stringify(obj));
-        // TODO: s/ {"Tuple":[(.*)]} / {\1} /g
-        return obj.name + ' ---> ' + JSON.stringify(obj.data);
+        var text = JSON.stringify(obj.data);
+        // Handle Erlang tuples
+        text = text.replace(/{"Tuple":\[/g, '{');
+        text = text.replace(/\]}/g, '}');
+        text = text.replace(/{"Tuple":""}/g, '{}');
+        // Heuristics
+        text = text.replace(/""/g, '[]');
+        // Note: order of replace-ing matters!
+        return obj.name + ' ---> ' + text;
     };
 
     var TREE_threads = function(eons){
