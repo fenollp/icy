@@ -79,12 +79,14 @@
             } else {
                 tre.toggle();
                 pre.toggle();
-                renderText();
-                //var tree = TREE_threads(eons);
-                //alert(tree);
+                dataParsed = TREE_threads(eons);
+                // alert(JSON.stringify(dataParsed));
+                // var dataParsed = [{ "children": [{ "children": [{ "children": [{ "children": [{ "children": [], "data": { "ne": "O", "pos": "NN", "type": "TK", "word": "Jolie" } }], "data": { "type": "NN" } }], "data": { "type": "NP" } }, { "children": [{ "children": [{ "children": [], "data": { "ne": "O", "pos": "JJ", "type": "TK", "word": "petite" } }], "data": { "type": "JJ" } }, { "children": [{ "children": [], "data": { "ne": "PERSON", "pos": "NN", "type": "TK", "word": "Morue" } }], "data": { "type": "NN" } }], "data": { "type": "NP" } }], "data": { "type": "NP" } }], "data": { "type": "ROOT", word: "root" } }];
+                renderText(dataParsed);
             }
         });
         $('#attach').toggle(false);
+        $('#tree').trigger('click');/////////////
 
     });
 
@@ -102,9 +104,31 @@
             }
             isntrs[eon.name].push(eon.data);
         });
-        var root = {data: {type: "ROOT", word: isntrs["tcore"].shift()}, children: []};
 
+        var TREE_fold = function(Children){
+            return [
+            {data:{word:"ƒ"}, children:[
+                {data:{ne:"NUMBER", word:"Jolie1"}, children:[]},
+                {data:{ne:"O", pos:"NN", type:"TK", word:"Jolie"}, children:Children}]}];
+        };
 
+        //var root = {data: {type: "ROOT", word: isntrs["tcore"].shift()}, children: []};
+        var root = [
+            {data:{word:"LOOL"}, children:
+                 /*{data:{word:"ƒ"}, children:[
+                    {data:{ne:"NUMBER", word:"Jolie1"}, children:[]},
+                    {data:{ne:"O", pos:"NN", type:"TK", word:"Jolie"}, children:[
+                        {data:{ne:"ORDINAL", pos:"NN", type:"TK", word:"Jolie"}, children:[
+                            {data:{ne:"PERSON", pos:"NN", type:"TK", word:"Jolie"}, children:[
+                                {data:{ne:"ORGANIZATION", pos:"NN", type:"TK", word:"Jolie5"}, children:[
+                                    ]}]}]}]}]}]} */
+                TREE_fold(
+                    TREE_fold(
+                        TREE_fold(
+                            [{data:{ne:"ORGANIZATION", pos:"NN", type:"TK", word:"Jolie5"}, children:[]}])))}
+        ];
+        return root;
+        // return [{ "children": [{ "children": [{ "children": [{ "children": [{ "children": [], "data": { "ne": "O", "pos": "NN", "type": "TK", "word": "Jolie" } }], "data": { "type": "NN" } }], "data": { "type": "NP" } }, { "children": [{ "children": [{ "children": [], "data": { "ne": "O", "pos": "JJ", "type": "TK", "word": "petite" } }], "data": { "type": "JJ" } }, { "children": [{ "children": [], "data": { "ne": "PERSON", "pos": "NN", "type": "TK", "word": "Morue" } }], "data": { "type": "NN" } }], "data": { "type": "NP" } }], "data": { "type": "NP" } }], "data": { "type": "ROOT", word: "root" } }];
     };
     </script>
 

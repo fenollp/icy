@@ -1,4 +1,6 @@
-/* ‘dataParsed’ holds the JSON tree. */
+/* Colors: O PERSON DATE ORGANIZATION LOCATION ORDINAL NUMBER
+Usage:
+  renderText(dataParsed); */
 
 var input = $("#sentence_input");
 input.keypress(function (e) {
@@ -8,7 +10,7 @@ input.keypress(function (e) {
   }
 });
 
-function renderText() {
+function renderText(dataParsed) {
    var nodes = {};
    var edges = [];
 
@@ -67,5 +69,3 @@ function buildGraphData(node, nodes, links) {
     buildGraphData(e, nodes, links);
   });
 }
-
-// renderText();
