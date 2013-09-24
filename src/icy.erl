@@ -14,6 +14,9 @@ start() ->
     [ok,ok,ok,ok] = [application:start(App) || App <- [crypto,ranch,cowboy,?MODULE]].
 
 
+-type name() :: string() | atom().
+-spec pass ({Name::name(), Time::integer(), Thing::term()}) -> any().
+
 pass (Thing) ->
     case whereis(?MODULE) of
         undefined -> {error,{unable_to_pass,server_down}};

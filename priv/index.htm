@@ -50,10 +50,19 @@
             // onmessage
             bullet.onmessage = function(e){
                 if (e.data != 'pong'){
+                    var pre_default = "Events recap:\n";
                     var pre = $('#msg');
                     var obj = EON(e.data);
                     eons.push(obj);
-                    pre.text(pre.text() + JSON.stringify(obj) + '\n');
+                    eons = eons.sort(function(l,r){
+                        if (l.time < r.time) return -1;
+                        if (l.time > r.time) return  1;
+                        return 0;
+                    });
+                    pre.text(pre_default);
+                    eons.forEach(function(o){
+                        pre.text(pre.text() + JSON.stringify(o) + '\n');
+                    });
                 }
             };
         };
@@ -95,7 +104,9 @@
     var EON = function(e_string) {
         var obj = $.parseJSON(eval(e_string));
         console.log('RECV: ' + JSON.stringify(obj));
-        return {name: obj["Erlang"]["Tuple"].shift(), data: obj["Erlang"]["Tuple"]};
+        return {name: obj["Erlang"]["Tuple"].shift(),
+                time: obj["Erlang"]["Tuple"].shift(),
+                data: obj["Erlang"]["Tuple"]};
     };
 
     var TREE_threads = function(eons){
