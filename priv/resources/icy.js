@@ -5,6 +5,7 @@ function EON (e_string) { // Erlang Object Notation :d
     console.log('RECV: ' + JSON.stringify(obj));
     return {name: obj["Erlang"]["Tuple"].shift(),
             time: obj["Erlang"]["Tuple"].shift(),
+            desc: obj["Erlang"]["Tuple"].shift(),
             data: obj["Erlang"]["Tuple"][0]};
 };
 
@@ -59,9 +60,10 @@ function create_root (nodes, edges, eons, mod_map) {
 function get_keyvalues(eons){
     var kvs = [];
     eons.forEach(function(eon){
-        var module = Object.keys(eon)[0];
-        var key = module +' : '+ module[0]["Tuple"][0];
-        var value = module[0]["Tuple"][1]["Tuple"];
+        var name = EON_str(eon['name']).replace(/"/g, '');
+        var desc = EON_str(eon['desc']).replace(/"/g, '\'');;
+        var key = name +' : '+ desc;
+        var value = eon['data'];
         kvs.push({'key':key, 'value':value});
     });
     return kvs;

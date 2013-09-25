@@ -28,7 +28,7 @@ start() ->
 pass (Name, Time, Description, Thing) ->
     case whereis(?MODULE) of
         undefined -> {error,{unable_to_pass,server_down}};
-        _ -> ?MODULE ! {pass, js_encode({Name, Time, {Description,Thing}})}
+        _ -> ?MODULE ! {pass, js_encode({Name, Time, Description, Thing})}
     end.
 
 
@@ -39,7 +39,7 @@ time () ->
 
 
 test_pass () ->
-    icy:pass(test, icy:time(), "this is bla", {bla,bla,bla}).
+    icy:pass(test, icy:time(), "this is bla", {bla,bla,icy:time()}).
 
 %% Internals
 
