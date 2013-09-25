@@ -20,8 +20,6 @@
     <script type="text/javascript" src="rsc/dagre.min.js"></script>
     <script type="text/javascript" src="rsc/dagre-d3-simple.js"></script>
 
-    <script type="text/javascript" src="rsc/tree.json"></script>
-
     <script src="/static/bullet.js"></script>
     <script type="text/javascript">
     $(document).ready(function(){
@@ -52,7 +50,13 @@
                 if (e.data != 'pong'){
                     var obj = EON(e.data);
                     eons.push(obj);
-                    EONS_print(eons, $('#msg'), "Events recap:\n", '\n');
+                    if (false === $('#text-view').is(':visible')){
+                        console.log("This always gets executed");
+                        EONS_print(eons, $('#text-view'), "Events recap:\n", '\n');
+                    } else {
+                        console.log("Tree is shown");
+                        TREE_threads(eons);
+                    }
                 }
             };
         };
@@ -68,26 +72,24 @@
             }
         });
 
-        $('#tree').on('click', function(){
+        $('#toggle-view').on('click', function(){
             console.log(eons);
-            var pre = $('#msg');
-            var tre = $('#attach');
-            if (false === pre.is(':visible')){
+            var pre = $('#text-view');
+            var tre = $('#tree-view');
+            if (false === pre.is(':visible')){  // View = text
                 tre.toggle();
                 pre.toggle();
                 $('html, body').css({overflow: "auto"});
-            } else {
+            } else {                            // View = tree
                 tre.toggle();
                 pre.toggle();
                 $('html, body').css({overflow: "hidden"});
-                dataParsed = TREE_threads(eons);
-                // alert(JSON.stringify(dataParsed));
+                TREE_threads(eons);
                 // var dataParsed = [{ "children": [{ "children": [{ "children": [{ "children": [{ "children": [], "data": { "ne": "O", "pos": "NN", "type": "TK", "word": "Jolie" } }], "data": { "type": "NN" } }], "data": { "type": "NP" } }, { "children": [{ "children": [{ "children": [], "data": { "ne": "O", "pos": "JJ", "type": "TK", "word": "petite" } }], "data": { "type": "JJ" } }, { "children": [{ "children": [], "data": { "ne": "PERSON", "pos": "NN", "type": "TK", "word": "Morue" } }], "data": { "type": "NN" } }], "data": { "type": "NP" } }], "data": { "type": "NP" } }], "data": { "type": "ROOT", word: "root" } }];
-                renderText(dataParsed);
             }
         });
-        $('#attach').toggle(false);
-        // $('#tree').trigger('click');/////////////
+        $('#tree-view').toggle(false);
+        $('#toggle-view').trigger('click');/////////////
 
     });
 
@@ -126,15 +128,18 @@
     };
 
     var TREE_threads = function(eons){
-        var isntrs = {};
-        eons.forEach(function(eon){
-            if (isntrs[eon.name] === null){
-                isntrs[eon.name] = [];
-            }
-            isntrs[eon.name].push(eon.data);
-        });
+        var nodes = {}, edges = [];
+        for (var k = 0, n = eons.length; k < n; k += 1){
+            // Create node
+            nodes[k] = {'id':k, 'label':eons[k].name, 'nodeclass':"type-undefined"};
+            // Create edge
+            edges.push({source:k, target:k+1, id:k +'-'+ (k+1)});
+        }
+        edges.pop(); //////remove last element (and return it) TEMPORARY
+        renderText2(nodes, edges);
+        return;
 
-        var TREE_fold = function(Children){
+        function TREE_fold (Children){
             return [
             {data:{word:"ƒ"}, children:[
                 {data:{ne:"NUMBER", word:"Jolie1"}, children:[]},
@@ -142,21 +147,23 @@
         };
 
         //var root = {data: {type: "ROOT", word: isntrs["tcore"].shift()}, children: []};
-        var root = [
-            {data:{word:"LOOL"}, children:
-                 /*{data:{word:"ƒ"}, children:[
-                    {data:{ne:"NUMBER", word:"Jolie1"}, children:[]},
-                    {data:{ne:"O", pos:"NN", type:"TK", word:"Jolie"}, children:[
-                        {data:{ne:"ORDINAL", pos:"NN", type:"TK", word:"Jolie"}, children:[
-                            {data:{ne:"PERSON", pos:"NN", type:"TK", word:"Jolie"}, children:[
-                                {data:{ne:"ORGANIZATION", pos:"NN", type:"TK", word:"Jolie5"}, children:[
-                                    ]}]}]}]}]}]} */
-                TREE_fold(
-                    TREE_fold(
-                        TREE_fold(
-                            [{data:{ne:"ORGANIZATION", pos:"NN", type:"TK", word:"Jolie5"}, children:[]}])))}
-        ];
-        return root;
+
+        // var root = [
+        //     {data:{word:"LOOL"}, children:
+        //     //     {data:{word:"ƒ"}, children:[
+        //     //        {data:{ne:"NUMBER", word:"Jolie1"}, children:[]},
+        //     //        {data:{ne:"O", pos:"NN", type:"TK", word:"Jolie"}, children:[
+        //     //            {data:{ne:"ORDINAL", pos:"NN", type:"TK", word:"Jolie"}, children:[
+        //     //                {data:{ne:"PERSON", pos:"NN", type:"TK", word:"Jolie"}, children:[
+        //     //                    {data:{ne:"ORGANIZATION", pos:"NN", type:"TK", word:"Jolie5"}, children:[
+        //     //                        ]}]}]}]}]}]} 
+        //         TREE_fold(
+        //             TREE_fold(
+        //                 TREE_fold(
+        //                     [{data:{ne:"ORGANIZATION", pos:"NN", type:"TK", word:"Jolie5"}, children:[]}])))}
+        // ];
+        // return root;
+
         // return [{ "children": [{ "children": [{ "children": [{ "children": [{ "children": [], "data": { "ne": "O", "pos": "NN", "type": "TK", "word": "Jolie" } }], "data": { "type": "NN" } }], "data": { "type": "NP" } }, { "children": [{ "children": [{ "children": [], "data": { "ne": "O", "pos": "JJ", "type": "TK", "word": "petite" } }], "data": { "type": "JJ" } }, { "children": [{ "children": [], "data": { "ne": "PERSON", "pos": "NN", "type": "TK", "word": "Morue" } }], "data": { "type": "NN" } }], "data": { "type": "NP" } }], "data": { "type": "NP" } }], "data": { "type": "ROOT", word: "root" } }];
     };
     </script>
@@ -164,7 +171,7 @@
     <style type="text/css">
     header { background-color:lightgreen; text-align:center; height:30px; }
     header > button#status { float:left; height:30px; background-color:cyan; }
-    header > button#tree { float:right; height:30px; }
+    header > button#toggle-view { float:right; height:30px; }
     </style>
 
 </head>
@@ -173,14 +180,14 @@
     <header>
         <button id="status" class="enable">unknown</button>
         <span>I was blind but now Icy!</span>
-        <button id="tree">Toggle tree</button>
+        <button id="toggle-view">Toggle tree</button>
     </header>
 
     <table width="100%" height="100%">
         <tbody>
             <tr>
                 <td align="center" valign="middle">
-<pre id="msg">
+<pre id="text-view">
 Events recap:
 </pre>
                 </td>
@@ -189,7 +196,7 @@ Events recap:
     </table>
 
     <script type="text/javascript" src="rsc/make_tree.js"></script>
-    <div id="attach">
+    <div id="tree-view">
         <svg class="main-svg" id="svg-canvas"></svg>
     </div>
 

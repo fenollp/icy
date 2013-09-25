@@ -2,13 +2,11 @@
 Usage:
   renderText(dataParsed); */
 
-var input = $("#sentence_input");
-input.keypress(function (e) {
-  if (e.which == 13) {
-    renderText(input.val());
-    e.preventDefault();
-  }
-});
+function renderText2(nodes, edges){
+  console.log(JSON.stringify({"nodes":nodes}));////////////////////////////////////////////////////////////////
+  console.log(JSON.stringify({"edges":edges}));////////////////////////////////////////////////////////////////
+  renderJSObjsToD3(nodes, edges, ".main-svg");
+};
 
 function renderText(dataParsed) {
    var nodes = {};
@@ -18,8 +16,10 @@ function renderText(dataParsed) {
      populate(e, nodes, edges);
    });
 
+  console.log(JSON.stringify({"nodes":nodes}));////////////////////////////////////////////////////////////////
+  console.log(JSON.stringify({"edges":edges}));////////////////////////////////////////////////////////////////
    renderJSObjsToD3(nodes, edges, ".main-svg");
-}
+};
 
 function populate(data, nodes, edges) {
   var nodeID = Object.keys(nodes).length;
