@@ -28,16 +28,26 @@
         var bullet;
 
         var open = function(){
+            var status = $('#status');
             bullet = $.bullet('ws://localhost:8888/bullet');
 
             bullet.onopen = function(){
-                $('#status').text('online').css({backgroundColor: 'green'});
+                status.text('Online').css({
+                    backgroundColor: 'green',
+                    color: 'white'
+                });
             };
             bullet.ondisconnect = function(){
-                $('#status').text('offline').css({backgroundColor: 'red'});
+                status.text('Offline').css({
+                    backgroundColor: 'red',
+                    color: 'white'
+                });
             };
             bullet.onclose = function(){
-                $('#status').text('closed').css({backgroundColor: 'yellow'});
+                status.text('Closed').css({
+                    backgroundColor: 'yellow',
+                    color: 'black'
+                });
             };
 
             bullet.onheartbeat = function(){
@@ -72,7 +82,6 @@
         });
 
         $('#toggle-view').on('click', function(){
-            console.log(eons);
             var pre = $('#text-view');
             var tre = $('#tree-view');
             if (false === pre.is(':visible')){
@@ -92,6 +101,12 @@
         $('#tree-view').toggle(false);
         $('#toggle-view').trigger('click'); // Makes tree-view default.
 
+        $('#bar').on('click', function(){
+            var bar = $('#bar');
+            var msg = 'Get it?';
+            if (bar.text() !== msg) bar.text(msg);
+            else bar.text('I was blind but now Icy!');
+        });
     });
     </script>
 
@@ -107,8 +122,8 @@
 <body>
 
     <header>
-        <button id="status" class="enable">unknown</button>
-        <span>I was blind but now Icy!</span>
+        <button id="status" class="enable">Unknown</button>
+        <span id="bar">I was blind but now Icy!</span>
         <button id="toggle-view">Toggle tree</button>
     </header>
 
