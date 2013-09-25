@@ -17,12 +17,12 @@ function EONS_print (eons, tag, placeholder, sep) {
     });
     tag.text(placeholder);
     eons.forEach(function(obj){
-        tag.text(tag.text() + EON_str(obj) + sep);
+        tag.text(tag.text() + obj.name +' ---> '+ EON_str(obj.data) + sep);
     });
 };
 
 function EON_str (obj){
-    var text = JSON.stringify(obj.data);
+    var text = JSON.stringify(obj);
     // Handle Erlang tuples
     text = text.replace(/{"Tuple":\[/g, '{');
     text = text.replace(/\]}/g, '}');
@@ -33,7 +33,7 @@ function EON_str (obj){
     text = text.replace(/"#/g, '#');
     text = text.replace(/>"/g, '>');
     // Note: ordering of .replace/2 matters!
-    return obj.name + ' ---> ' + text;
+    return text;
 };
 
 
@@ -44,7 +44,8 @@ function TREE_threads (eons){
     var n = eons.length;
     for (var k = 0; k < n; k += 1){
         // Create node
-        nodes[k] = {'id':k+[], 'label':eons[k].name, 'nodeclass':"type-undefined"};
+        var data = eons[k].name + ' : ' + EON_str(eons[k].data);
+        nodes[k] = {'id':k+[], 'label':data, 'nodeclass':"type-undefined"};
 
         // Create edge
         edges.push(new_edge(k, k+1));
