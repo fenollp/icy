@@ -17,7 +17,7 @@
     <script type="text/javascript" src="rsc/jquery-2.0.0.min.js"></script>
     <script type="text/javascript" src="rsc/jquery.form.min.js"></script>
     <script type="text/javascript" src="rsc/d3.min.js"></script>
-    <script type="text/javascript" src="rsc/dagre.min.js"></script>
+    <script type="text/javascript" src="rsc/dagre.js"></script>
     <script type="text/javascript" src="rsc/dagre-d3-simple.js"></script>
 
     <script src="/static/bullet.js"></script>
@@ -75,12 +75,14 @@
             console.log(eons);
             var pre = $('#text-view');
             var tre = $('#tree-view');
-            if (false === pre.is(':visible')){  // View = text
+            if (false === pre.is(':visible')){
+                // View = text
                 tre.toggle();
                 pre.toggle();
                 $('html, body').css({overflow: "auto"});
                 EONS_print(eons, pre, "Events recap:\n", '\n');
-            } else {                            // View = tree
+            } else {
+                // View = tree
                 tre.toggle();
                 pre.toggle();
                 $('html, body').css({overflow: "hidden"});
@@ -88,89 +90,17 @@
             }
         });
         $('#tree-view').toggle(false);
-        $('#toggle-view').trigger('click');/////////////
+        $('#toggle-view').trigger('click'); // Makes tree-view default.
 
     });
-
-    function EON (e_string) { // Erlang Object Notation :d
-        var obj = $.parseJSON(eval(e_string));
-        console.log('RECV: ' + JSON.stringify(obj));
-        return {name: obj["Erlang"]["Tuple"].shift(),
-                time: obj["Erlang"]["Tuple"].shift(),
-                data: obj["Erlang"]["Tuple"][0]};
-    };
-    function EONS_print (eons, tag, placeholder, sep) {
-        // Sort eons by timestamp
-        eons = eons.sort(function(l,r){
-            if (l.time < r.time) return -1;
-            if (l.time > r.time) return  1;
-            return 0;
-        });
-        tag.text(placeholder);
-        eons.forEach(function(obj){
-            tag.text(tag.text() + EON_str(obj) + sep);
-        });
-    };
-    function EON_str (obj){ // Was: JSON.stringify(obj);
-        var text = JSON.stringify(obj.data);
-        // Handle Erlang tuples
-        text = text.replace(/{"Tuple":\[/g, '{');
-        text = text.replace(/\]}/g, '}');
-        text = text.replace(/{"Tuple":""}/g, '{}');
-        // Heuristics
-        text = text.replace(/""/g, '[]');
-        text = text.replace(/"</g, '<');
-        text = text.replace(/"#/g, '#');
-        text = text.replace(/>"/g, '>');
-        // Note: order of replace-ing matters!
-        return obj.name + ' ---> ' + text;
-    };
-
-    var TREE_threads = function(eons){
-        var nodes = {}, edges = [];
-        for (var k = 0, n = eons.length; k < n; k += 1){
-            // Create node
-            nodes[k] = {'id':k, 'label':eons[k].name, 'nodeclass':"type-undefined"};
-            // Create edge
-            edges.push({source:k, target:k+1, id:k +'-'+ (k+1)});
-        }
-        edges.pop(); //////remove last element (and return it) TEMPORARY
-        renderText2(nodes, edges);
-        return;
-
-        function TREE_fold (Children){
-            return [
-            {data:{word:"ƒ"}, children:[
-                {data:{ne:"NUMBER", word:"Jolie1"}, children:[]},
-                {data:{ne:"O", pos:"NN", type:"TK", word:"Jolie"}, children:Children}]}];
-        };
-
-        //var root = {data: {type: "ROOT", word: isntrs["tcore"].shift()}, children: []};
-
-        // var root = [
-        //     {data:{word:"LOOL"}, children:
-        //     //     {data:{word:"ƒ"}, children:[
-        //     //        {data:{ne:"NUMBER", word:"Jolie1"}, children:[]},
-        //     //        {data:{ne:"O", pos:"NN", type:"TK", word:"Jolie"}, children:[
-        //     //            {data:{ne:"ORDINAL", pos:"NN", type:"TK", word:"Jolie"}, children:[
-        //     //                {data:{ne:"PERSON", pos:"NN", type:"TK", word:"Jolie"}, children:[
-        //     //                    {data:{ne:"ORGANIZATION", pos:"NN", type:"TK", word:"Jolie5"}, children:[
-        //     //                        ]}]}]}]}]}]} 
-        //         TREE_fold(
-        //             TREE_fold(
-        //                 TREE_fold(
-        //                     [{data:{ne:"ORGANIZATION", pos:"NN", type:"TK", word:"Jolie5"}, children:[]}])))}
-        // ];
-        // return root;
-
-        // return [{ "children": [{ "children": [{ "children": [{ "children": [{ "children": [], "data": { "ne": "O", "pos": "NN", "type": "TK", "word": "Jolie" } }], "data": { "type": "NN" } }], "data": { "type": "NP" } }, { "children": [{ "children": [{ "children": [], "data": { "ne": "O", "pos": "JJ", "type": "TK", "word": "petite" } }], "data": { "type": "JJ" } }, { "children": [{ "children": [], "data": { "ne": "PERSON", "pos": "NN", "type": "TK", "word": "Morue" } }], "data": { "type": "NN" } }], "data": { "type": "NP" } }], "data": { "type": "NP" } }], "data": { "type": "ROOT", word: "root" } }];
-    };
     </script>
 
     <style type="text/css">
-    header { background-color:lightgreen; text-align:center; height:30px; }
-    header > button#status { float:left; height:30px; background-color:cyan; }
-    header > button#toggle-view { float:right; height:30px; }
+        html, body { margin:0; padding:0; }
+        body { line-height:30px; }
+        header { background-color:lightgreen; text-align:center; height:30px; }
+        header > button#status { float:left; height:30px; background-color:cyan; }
+        header > button#toggle-view { float:right; height:30px; }
     </style>
 
 </head>
@@ -194,7 +124,7 @@ Events recap:
         </tbody>
     </table>
 
-    <script type="text/javascript" src="rsc/make_tree.js"></script>
+    <script type="text/javascript" src="rsc/icy.js"></script>
     <div id="tree-view">
         <svg class="main-svg" id="svg-canvas"></svg>
     </div>
