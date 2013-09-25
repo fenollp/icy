@@ -6,7 +6,7 @@
 
 -export([start/0]).
 
--export([pass/3]).
+-export([pass/4]).
 -export([time/0]).
 
 -export([test_pass/0]). %% Used when testing the bridge.
@@ -21,14 +21,14 @@ start() ->
 
 
 -type name() :: string() | atom().
--spec pass (Name::name(), Time::pos_integer(), Thing::term()) -> any().
+-spec pass (Name::name(), Time::pos_integer(), Description::name(), Thing::term()) -> any().
 %% Time has to be the result of ?MODULE:time/0, executed on the distant module
 %%   in order to preserve synchronicity.
 
-pass (Name, Time, Thing) ->
+pass (Name, Time, Description, Thing) ->
     case whereis(?MODULE) of
         undefined -> {error,{unable_to_pass,server_down}};
-        _ -> ?MODULE ! {pass, js_encode({Name, Time, Thing})}
+        _ -> ?MODULE ! {pass, js_encode({Name, Time, {Description,Thing}})}
     end.
 
 
@@ -39,7 +39,7 @@ time () ->
 
 
 test_pass () ->
-    icy:pass(test, icy:time(), "bla").
+    icy:pass(test, icy:time(), "this is bla", {bla,bla,bla}).
 
 %% Internals
 

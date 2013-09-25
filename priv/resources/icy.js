@@ -56,9 +56,23 @@ function create_root (nodes, edges, eons, mod_map) {
     return id;
 };
 
+function get_keyvalues(eons){
+    var kvs = [];
+    eons.forEach(function(eon){
+        var module = Object.keys(eon)[0];
+        var key = module +' : '+ module[0]["Tuple"][0];
+        var value = module[0]["Tuple"][1]["Tuple"];
+        kvs.push({'key':key, 'value':value});
+    });
+    return kvs;
+};
+
 function TREE_threads (eons){
     var nodes = {}, edges = [];
     if (jQuery.isEmptyObject(eons)) return;
+
+    var kv = get_keyvalues(eons);
+    console.log("KV: "+JSON.stringify(kv));
 
     var mod_map = order_eons_by_name(eons);
     var iddd;
@@ -78,8 +92,6 @@ function TREE_threads (eons){
     // Add bottom element
     // nodes[n] = {'id':n+[], 'label':"R", 'nodeclass':"node-DATE"};
     // edges[edges.length -1] = new_edge(n -1, n);
-    // Add top element
-    //edges.push(new_edge(0, 1));
 for (var i = 0, n = Object.keys(nodes).length; i < n; i += 1){
     if (nodes[i] !== undefined) console.log("ID "+i);
 }
