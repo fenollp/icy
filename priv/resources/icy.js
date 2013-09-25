@@ -38,34 +38,75 @@ function EON_str (obj){
 
 
 
+function create_root (nodes, edges, eons, mod_map) {
+    console.log("ICI");
+    console.log("EONS: "+JSON.stringify(mod_map));
+    var data = "ROOT";
+    if (mod_map['tea'] !== undefined){
+        if (mod_map['tea'][0]['Tuple'] !== undefined){
+            if (mod_map['tea'][0]['Tuple'][0] === "i"){
+                mod_map['tea'][0]['Tuple'].shift();
+                data = mod_map['tea'][0]['Tuple'][0];
+                delete mod_map['tea'];
+            }
+        }
+    }
+    var id = new_id();
+    nodes[id] = {'id':id+[], 'label':data, 'nodeclass':"node-ROOT"};
+    return id;
+};
+
 function TREE_threads (eons){
     var nodes = {}, edges = [];
     if (jQuery.isEmptyObject(eons)) return;
+
+    var mod_map = order_eons_by_name(eons);
+    var iddd;
+    iddd = create_root(nodes, edges, eons, mod_map);
+    console.log("ROOT: "+JSON.stringify(nodes));
+
     var n = eons.length;
     for (var k = 0; k < n; k += 1){
+        console.log("iddd = "+ iddd);
+        var newId = new_id();
+        // Create edge
+        edges.push(new_edge(iddd, newId));
         // Create node
         var data = eons[k].name + ' : ' + EON_str(eons[k].data);
-        nodes[k] = {'id':k+[], 'label':data, 'nodeclass':"type-undefined"};
-
-        // Create edge
-        edges.push(new_edge(k, k+1));
+        nodes[newId] = {'id':newId+[], 'label':data, 'nodeclass':"type-undefined"};
     }
-    edges[edges.length -1] = new_edge(n -1, n);
-    nodes[n] = {'id':n+[], 'label':"R", 'nodeclass':"node-DATE"};
-    n += 1;
-    nodes[n] = {'id':n+[], 'label':"ROOT", 'nodeclass':"node-O"};
-    edges.push(new_edge(n, 0));
-    n += 1;
-    renderText2(nodes, edges);
-    return;
+    // Add bottom element
+    // nodes[n] = {'id':n+[], 'label':"R", 'nodeclass':"node-DATE"};
+    // edges[edges.length -1] = new_edge(n -1, n);
+    // Add top element
+    //edges.push(new_edge(0, 1));
+for (var i = 0, n = Object.keys(nodes).length; i < n; i += 1){
+    if (nodes[i] !== undefined) console.log("ID "+i);
+}
+    // var mod_map = order_eons_by_name(eons);
+    // // Rework tree
+    // for (var k = 0; k < n; k += 1){
+    //     switch (eons[k].name){
+    //         case 'tea':
+    //             if (mod_map['tea']['Tuple']['i'] !== undefined){
+    //                 // This is 
+    //             }
+    //             break;
+    //         default:
+    //             // Remove node & edges
+    //             // console.log("Node removed = "+ …);
+    //             break;
+    //     }
+    // }
 
-    function TREE_fold (Children){
-        return [
-        {data:{word:"ƒ"}, children:[
-            {data:{ne:"NUMBER", word:"Jolie1"}, children:[]},
-            {data:{ne:"O", pos:"NN", type:"TK", word:"Jolie"}, children:Children}]}];
-    };
+    renderText2(nodes, edges);
 };
+
+var new_id = function(){
+    // All my JS wat : http://stackoverflow.com/a/1535650/1418165
+    var counter = 0;
+    return function(){ return counter++ };
+}();
 
 function new_edge (from, to){
     // from, to: must be integers or strings of integers.

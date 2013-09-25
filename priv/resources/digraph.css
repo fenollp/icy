@@ -1,4 +1,4 @@
-.node-O             > .label > rect { fill: #00ffd0; }
+.node-ROOT          > .label > rect { fill: #00ffd0; }
 .node-PERSON        > .label > rect { fill: #b997ff; }
 .node-DATE          > .label > rect { fill: #ffae6a; }
 .node-ORGANIZATION  > .label > rect { fill: #96c2ff; }
