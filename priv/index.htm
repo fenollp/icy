@@ -50,11 +50,10 @@
                 if (e.data != 'pong'){
                     var obj = EON(e.data);
                     eons.push(obj);
-                    if (false === $('#text-view').is(':visible')){
-                        console.log("This always gets executed");
-                        EONS_print(eons, $('#text-view'), "Events recap:\n", '\n');
+                    var pre = $('#text-view');
+                    if (pre.is(':visible')){
+                        EONS_print(eons, pre, "Events recap:\n", '\n');
                     } else {
-                        console.log("Tree is shown");
                         TREE_threads(eons);
                     }
                 }
@@ -80,12 +79,12 @@
                 tre.toggle();
                 pre.toggle();
                 $('html, body').css({overflow: "auto"});
+                EONS_print(eons, pre, "Events recap:\n", '\n');
             } else {                            // View = tree
                 tre.toggle();
                 pre.toggle();
                 $('html, body').css({overflow: "hidden"});
                 TREE_threads(eons);
-                // var dataParsed = [{ "children": [{ "children": [{ "children": [{ "children": [{ "children": [], "data": { "ne": "O", "pos": "NN", "type": "TK", "word": "Jolie" } }], "data": { "type": "NN" } }], "data": { "type": "NP" } }, { "children": [{ "children": [{ "children": [], "data": { "ne": "O", "pos": "JJ", "type": "TK", "word": "petite" } }], "data": { "type": "JJ" } }, { "children": [{ "children": [], "data": { "ne": "PERSON", "pos": "NN", "type": "TK", "word": "Morue" } }], "data": { "type": "NN" } }], "data": { "type": "NP" } }], "data": { "type": "NP" } }], "data": { "type": "ROOT", word: "root" } }];
             }
         });
         $('#tree-view').toggle(false);
