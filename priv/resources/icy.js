@@ -42,53 +42,96 @@ function EON_str (obj){
 
 function TREE_threads (eons){
     if ($.isEmptyObject(eons)) return;
-    var nodes = [], edges = [], unused = []; /// MAY display unused (id='time':) differently?
+    var NODES = [], EDGES = []; // The tree
+    var FORKS = {}, UNUSED = []; /// MAY display UNUSED (id='time':) differently?
 
     var kvs = TREE_get_keyvalues(eons);
     kvs.forEach(function(kv){
-        // Careful with multiple branches. Create|close them in a single case: or otherwise…
+    try{
+        // Fullcaps are for variables declared before this loop.
+        // Careful with forks. Create|close them in a single case: or otherwise…
+        // Order here doesn't really matter (does it?)
+        // Certain assumptions may have been made. Eg: it is going to end fast enough for Pids
+        //   to be garanteed unique identifiers.
         switch (true){
-            case /tea : 'i'/.test(kv['key']) && nodes.length == 0:
-                var root = {id:"0", nodeclass:"node-ROOT",
-                            title: kv['value']['Tuple'][1]};
-                nodes.push(root);
+            case /tea : 'i'/.test(kv['key']) && NODES.length == 0:
+                var root = {id:"0", nodeclass:"node-INPUT", title:kv['value']['Tuple'][1]};
+                NODES.push(root);
                 break;
-            case /tea : 'result'/.test(kv['key']) && nodes.length != 0:
-                TREE_add_leaf_simple(nodes,edges, "result", "node-END", kv['value']['Tuple'][0]);
+
+            case /tea : 'result'/.test(kv['key']) && NODES.length != 0:
+                TREE_add_leaf_simple(NODES,EDGES, "result", "node-RESULT", kv['value']['Tuple'][0]);
                 break;
+
             case /tcache : '(find|add)_update'/.test(kv['key']):
                 var text = 'Adding '+ EON_str(kv['value']['Tuple'][0]) +' '
                                     + EON_str(kv['value']['Tuple'][1]) +' '
                                     + EON_str(kv['value']['Tuple'][2]) +' = '
                                     + EON_str(kv['value']['Tuple'][3]);
-                TREE_add_leaf_simple(nodes,edges, kv['key'], "node-CACHE", text);
+                TREE_add_leaf_simple(NODES,EDGES, kv['key'], "node-CACHE", text);
                 break;
+
+            case /tthread : 'thread_evaluated'/.test(kv['key']):
+                var from   = EON_str(kv['value']['Tuple'][1]['Tuple'][5]);
+                var to     = EON_str(kv['value']['Tuple'][0]);
+                var input  = EON_str(kv['value']['Tuple'][1]['Tuple'][0]);
+                var output = EON_str(kv['value']['Tuple'][2]);
+                var parent_id;
+                if (FORKS[to] === undefined){
+                    // Pool start node does not exist yet.
+                    parent_id = TREE_add_leaf_simple(NODES,EDGES, "Pool "+to, "node-POOL");
+                    // Register its id to the set of nodes-that-forks.
+                    FORKS[to] = {'start':parent_id};
+                } else {
+                    parent_id = FORKS[to]['start'];
+                }
+
+                // Fill the fork
+                parent_id = TREE_add_leaf_simple(NODES,EDGES, "input",  'node-INPUT',  input,  parent_id);
+                parent_id = TREE_add_leaf_simple(NODES,EDGES, from,     'node-THREAD', null,   parent_id);
+                parent_id = TREE_add_leaf_simple(NODES,EDGES, "output", 'node-RESULT', output, parent_id);
+
+                // Attach fork to pool's end
+                if (FORKS[to]['end'] === undefined){
+                    // Pool finish node does not exist yet.
+                    FORKS[to]['end'] = TREE_add_leaf_simple(NODES,EDGES, to, "node-POOL");
+                } else {
+                    // Make last node created point to pool's end
+                    EDGES.push(new_edge(NODES[NODES.length -1]['id'], FORKS[to]['end']));
+                }
+                break;
+
             default:
-                unused.push(kv);
+                UNUSED.push(kv);
                 break;
         }
+    } catch(e){ console.log("ILL FORMED: "+JSON.stringify(kv)); }
     });
-    console.log("UNUSED: "+JSON.stringify(unused));
+    console.log("UNUSED: "+JSON.stringify(UNUSED));
 
     ///TEMPORARY
     // Move 'title': and 'subtitle': into 'label':.
-    for (var i = 0, n = nodes.length; i < n; i += 1){
-        var title = nodes[i].title || '';
-        nodes[i]["label"] = title + ((nodes[i].subtitle) ? ' | '+EON_str(nodes[i].subtitle) : '');
+    for (var i = 0, n = NODES.length; i < n; i += 1){
+        var title = NODES[i].title || '';
+        NODES[i]["label"] = title + ((NODES[i].subtitle) ? ' | '+EON_str(NODES[i].subtitle) : '');
     };
 
-    renderText2(nodes, edges);
+    renderText2(NODES, EDGES);
 };
 
-function TREE_add_leaf_simple(nodes, edges, Ntitle, Nclass, Nsubtitle){
-    Nclass = Nclass || 'node-O';
-    Nsubtitle = Nsubtitle || '';
-    var p_node = nodes[nodes.length -1];
-    var p_edge = edges[edges.length -1];
-    var last_node = {id:nodes.length+[], nodeclass:Nclass, title:Ntitle, subtitle:Nsubtitle};
-    nodes.push(last_node);
-    var last_edge = new_edge(p_node['id'], last_node['id']);
-    edges.push(last_edge);
+function TREE_add_leaf_simple(nodes, edges, Ntitle, Nclass, Nsubtitle, parent_node_id){
+    Nclass         = Nclass         || 'node-O';
+    Nsubtitle      = Nsubtitle      || '';
+    var p_node_id = nodes.length -1;
+    parent_node_id = parent_node_id || p_node_id;
+
+    var p_node = nodes[p_node_id], p_edge = edges[edges.length -1];
+    var n_node_id = 1 + p_node_id;
+    var n_node = {id:n_node_id+[], nodeclass:Nclass, title:Ntitle, subtitle:Nsubtitle};
+    nodes.push(n_node);
+    var n_edge = new_edge(parent_node_id, n_node['id']);
+    edges.push(n_edge);
+    return n_node_id;
 };
 
 var new_id = function(){
