@@ -118,6 +118,15 @@ function TREE_threads (eons){
                 }
                 break;
 
+            case /^tcore : 'primop_apply'/.test(kv['key']):
+                var op = EON_str(kv['value']['Tuple'][0]).match(/\.([^\.]+)\./)[1];
+                var args = kv['value']['Tuple'][1]; // …[0] and …[1] only
+                var input  = EON_str(args[0]) +' '+op+' '+ EON_str(args[1]);
+                var output = EON_str(kv['value']['Tuple'][2]);
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, "locally", 'node-INPUT', input, P_NODE);
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, output,    'node-RESULT', null, P_NODE);
+                break;
+
             default:
                 UNUSED.push(kv);
                 break;
