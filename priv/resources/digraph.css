@@ -1,8 +1,9 @@
 .node-ROOT          > .label > rect { fill: #00ffd0; }
 .node-END           > .label > rect { fill: #ffae6a; }
+.node-CACHE         > .label > rect { fill: #7e7e7e; }
+
 .node-PERSON        > .label > rect { fill: #b997ff; }
 .node-ORGANIZATION  > .label > rect { fill: #96c2ff; }
-.node-LOCATION      > .label > rect { fill: #7e7e7e; }
 .node-ORDINAL       > .label > rect { fill: #92ff7d; }
 .node-NUMBER        > .label > rect { fill: #fdb9ff; }
 

@@ -54,10 +54,14 @@ function TREE_threads (eons){
                 nodes.push(root);
                 break;
             case /tea : 'result'/.test(kv['key']) && nodes.length != 0:
-                TREE_add_leaf_simple(nodes, edges, "result", "node-END", kv['value']['Tuple'][0]);
+                TREE_add_leaf_simple(nodes,edges, "result", "node-END", kv['value']['Tuple'][0]);
                 break;
-            case /tcache : 'find'/.test(kv['key']):
-                
+            case /tcache : '(find|add)_update'/.test(kv['key']):
+                var text = 'Adding '+ EON_str(kv['value']['Tuple'][0]) +' '
+                                    + EON_str(kv['value']['Tuple'][1]) +' '
+                                    + EON_str(kv['value']['Tuple'][2]) +' = '
+                                    + EON_str(kv['value']['Tuple'][3]);
+                TREE_add_leaf_simple(nodes,edges, kv['key'], "node-CACHE", text);
                 break;
             default:
                 unused.push(kv);
