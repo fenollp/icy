@@ -18,7 +18,8 @@ function EONS_print (eons, tag, placeholder, sep) {
     });
     tag.text(placeholder);
     eons.forEach(function(obj){
-        tag.text(tag.text() + obj.name +' ---> '+ EON_str(obj.data) + sep);
+        tag.text(tag.text() +
+            obj.name + ' “'+obj.desc+'”' +' ---> '+ EON_str(obj.data) + sep);
     });
 };
 
@@ -39,24 +40,6 @@ function EON_str (obj){
 
 
 
-function create_root (nodes, edges, eons, mod_map) {
-    console.log("ICI");
-    console.log("EONS: "+JSON.stringify(mod_map));
-    var data = "ROOT";
-    if (mod_map['tea'] !== undefined){
-        if (mod_map['tea'][0]['Tuple'] !== undefined){
-            if (mod_map['tea'][0]['Tuple'][0] === "i"){
-                mod_map['tea'][0]['Tuple'].shift();
-                data = mod_map['tea'][0]['Tuple'][0];
-                delete mod_map['tea'];
-            }
-        }
-    }
-    var id = new_id();
-    nodes[id] = {'id':id+[], 'label':data, 'nodeclass':"node-ROOT"};
-    return id;
-};
-
 function get_keyvalues(eons){
     var kvs = [];
     eons.forEach(function(eon){
@@ -64,7 +47,7 @@ function get_keyvalues(eons){
         var desc = EON_str(eon['desc']).replace(/"/g, '\'');;
         var key = name +' : '+ desc;
         var value = eon['data'];
-        var kv = {'key':key, 'value':value};
+        var kv = {'key':key, 'value':value, 'time':eon['time']};
         kvs.push(kv);
         console.log("KV: "+JSON.stringify(kv));
     });
@@ -72,66 +55,36 @@ function get_keyvalues(eons){
 };
 
 function TREE_threads (eons){
-    var nodes = [], edges = [];
     if ($.isEmptyObject(eons)) return;
+    var nodes = [], edges = [], unused = []; /// MAY display unused (id='time':) differently?
 
     var kvs = get_keyvalues(eons);
     kvs.forEach(function(kv){
         switch (true){
-            case /tea : 'i'/.test(kv['key']):
-                var previous = null;
+            case /tea : 'i'/.test(kv['key']) && nodes.length == 0:
                 var root = {id:"0", nodeclass:"node-ROOT", title:kv['value']};
                 nodes.push(root);
                 break;
+            case /tea : 'result'/.test(kv['key']) && nodes.length != 0:
+                var p_node = nodes[nodes.length -1];
+                var p_edge = edges[edges.length -1];
+                var last_node = {id:nodes.length+[], nodeclass:"node-END", title:"result", subtitle:kv['value']};
+                nodes.push(last_node);
+                var last_edge = new_edge(p_node['id'], last_node['id']);
+                edges.push(last_edge);
+                break;
             default:
-                console.log("UNUSED: "+JSON.stringify(kv));
+                unused.push(kv);
                 break;
         }
     });
-
-    // var mod_map = order_eons_by_name(eons);
-    // var iddd;
-    // iddd = create_root(nodes, edges, eons, mod_map);
-    // console.log("ROOT: "+JSON.stringify(nodes));
-    // var n = eons.length;
-    // for (var k = 0; k < n; k += 1){
-    //     console.log("iddd = "+ iddd);
-    //     var newId = new_id();
-    //     // Create edge
-    //     edges.push(new_edge(iddd, newId));
-    //     // Create node
-    //     var data = eons[k].name + ' : ' + EON_str(eons[k].data);
-    //     nodes[newId] = {'id':newId+[], 'label':data, 'nodeclass':"type-undefined"};
-    // }
-
-    // Add bottom element
-    // nodes[n] = {'id':n+[], 'label':"R", 'nodeclass':"node-DATE"};
-    // edges[edges.length -1] = new_edge(n -1, n);
-
-// for (var i = 0, n = Object.keys(nodes).length; i < n; i += 1){
-//     if (nodes[i] !== undefined) console.log("ID "+i);
-// }
-    // var mod_map = order_eons_by_name(eons);
-    // // Rework tree
-    // for (var k = 0; k < n; k += 1){
-    //     switch (eons[k].name){
-    //         case 'tea':
-    //             if (mod_map['tea']['Tuple']['i'] !== undefined){
-    //                 // This is 
-    //             }
-    //             break;
-    //         default:
-    //             // Remove node & edges
-    //             // console.log("Node removed = "+ …);
-    //             break;
-    //     }
-    // }
+    console.log("UNUSED: "+JSON.stringify(unused));
 
     ///TEMPORARY
     // Move 'title': and 'subtitle': into 'label':.
     for (var i = 0, n = nodes.length; i < n; i += 1){
-        var title = nodes[i].title || '';
-        nodes[i]["label"] = title + ((nodes[i].subtitle) ? ' | '+nodes[i].subtitle : '');
+        var title = EON_str(nodes[i].title) || '';
+        nodes[i]["label"] = title + ((nodes[i].subtitle) ? ' | '+EON_str(nodes[i].subtitle) : '');
     };
 
     renderText2(nodes, edges);
@@ -147,23 +100,6 @@ function new_edge (from, to){
     // from, to: must be integers or strings of integers.
     return {'source':from+[], 'target':to+[], 'id':from +'-'+ to};
 };
-
-function order_eons_by_name (eons){
-    // At this point eons is already time-ordered,
-    //   listings will thus be also ordered.
-    var listings = {};
-    eons.forEach(function(eon){
-        if (listings[eon.name] === undefined){
-            listings[eon.name] = [];
-        }
-        listings[eon.name].push(eon.data);
-    });
-    return listings;
-};
-
-/* Colors: O PERSON DATE ORGANIZATION LOCATION ORDINAL NUMBER
-Usage:
-  renderText(dataParsed); */
 
 function renderText2(nodes, edges){
     console.log(JSON.stringify({"nodes":nodes}));////////////////////////////////////////////////////////////////
