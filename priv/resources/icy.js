@@ -71,17 +71,24 @@ function TREE_threads (eons){
                 TREE_add_leaf_simple(NODES,EDGES, kv['key'], "node-CACHE", text);
                 break;
 
-            case /tthread : 'thread_evaluated'/.test(kv['key']):
-                var from   = EON_str(kv['value']['Tuple'][1]['Tuple'][5]);
+            case /tthread : 'creating_n_threads'/.test(kv['key']):
                 var to     = EON_str(kv['value']['Tuple'][0]);
+                var amount =         kv['value']['Tuple'][1]; // uint
+                var pids   = EON_str(kv['value']['Tuple'][2]);
+                FORKS[to] = {'n':amount, 'pids':pids};
+                break;
+
+            case /tthread : 'thread_evaluated'/.test(kv['key']):
+                var to     = EON_str(kv['value']['Tuple'][0]);
+                var from   = EON_str(kv['value']['Tuple'][1]['Tuple'][5]);
                 var input  = EON_str(kv['value']['Tuple'][1]['Tuple'][0]);
                 var output = EON_str(kv['value']['Tuple'][2]);
                 var parent_id;
-                if (FORKS[to] === undefined){
+                if (FORKS[to]['start'] === undefined){
                     // Pool start node does not exist yet.
                     parent_id = TREE_add_leaf_simple(NODES,EDGES, "Pool "+to, "node-POOL");
                     // Register its id to the set of nodes-that-forks.
-                    FORKS[to] = {'start':parent_id};
+                    FORKS[to]['start'] = parent_id;
                 } else {
                     parent_id = FORKS[to]['start'];
                 }
@@ -95,9 +102,19 @@ function TREE_threads (eons){
                 if (FORKS[to]['end'] === undefined){
                     // Pool finish node does not exist yet.
                     FORKS[to]['end'] = TREE_add_leaf_simple(NODES,EDGES, to, "node-POOL");
+                    FORKS[to]['end_node_pos'] = NODES.length -1; // Store current pos
                 } else {
                     // Make last node created point to pool's end
                     EDGES.push(new_edge(NODES[NODES.length -1]['id'], FORKS[to]['end']));
+                    // Move pool's end node to last place of NODES array in order to restitute
+                    //   root flow's place
+                }
+                if (--FORKS[to]['n'] === 0){
+                    // That was the last thread of the pool.
+                    var swapping = NODES[FORKS[to]['end_node_pos']];
+                    NODES[FORKS[to]['end_node_pos']] = NODES[NODES.length -1];
+                    NODES[NODES.length -1] = swapping;
+                    delete FORKS[to];
                 }
                 break;
 
@@ -105,7 +122,7 @@ function TREE_threads (eons){
                 UNUSED.push(kv);
                 break;
         }
-    } catch(e){ console.log("ILL FORMED: "+JSON.stringify(kv)); }
+    } catch(e){ console.log("ILL FORMED: (Got '"+e+"')"+JSON.stringify(kv)); }
     });
     console.log("UNUSED: "+JSON.stringify(UNUSED));
 
