@@ -61,7 +61,8 @@ function TREE_threads (eons){
                 break;
 
             case /^tea : 'result'/.test(kv['key']) && P_NODE !== undefined:
-                P_NODE = TREE_add_leaf_simple(NODES,EDGES, "result", "node-RESULT", kv['value']['Tuple'][0], P_NODE);
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, "result", "node-RESULT",
+                    EON_str(kv['value']['Tuple'][0]), P_NODE);
                 break;
 
             case /^tcache : '(find|add)_update'/.test(kv['key']):
@@ -129,7 +130,7 @@ function TREE_threads (eons){
     // Move 'title': and 'subtitle': into 'label':.
     for (var i = 0, n = NODES.length; i < n; i += 1){
         var title = NODES[i].title || '';
-        NODES[i]["label"] = title + ((NODES[i].subtitle) ? ' | '+EON_str(NODES[i].subtitle) : '');
+        NODES[i]["label"] = title + ((NODES[i].subtitle) ? ' | '+NODES[i].subtitle : '');
     };
 
     renderText2(NODES, EDGES);
