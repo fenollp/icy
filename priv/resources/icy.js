@@ -55,9 +55,8 @@ function TREE_threads (eons){
         // Certain assumptions may have been made. Eg: it is going to end fast enough for Pids
         //   to be garanteed unique identifiers.
         switch (true){
-            case /^tea : 'i'/.test(kv['key']) && P_NODE === undefined:
-                var root = {id:"0", nodeclass:"node-INPUT", title:kv['value']['Tuple'][1]};
-                NODES.push(root);
+            case /^tea : 'i'/.test(kv['key']):
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, kv['value']['Tuple'][1], "node-INPUT");
                 break;
 
             case /^tea : 'result'/.test(kv['key']) && P_NODE !== undefined:
@@ -155,6 +154,7 @@ function TREE_add_leaf_simple(nodes, edges, Ntitle, Nclass, Nsubtitle, parent_no
     var n_node_id = 1 + p_node_id;
     var n_node = {id:n_node_id+[], nodeclass:Nclass, title:Ntitle, subtitle:Nsubtitle};
     nodes.push(n_node);
+    if (nodes.length === 1) return;
     var n_edge = new_edge(parent_node_id, n_node['id']);
     edges.push(n_edge);
     return n_node_id;
