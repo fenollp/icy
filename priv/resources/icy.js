@@ -44,6 +44,7 @@ function TREE_threads (eons){
     if ($.isEmptyObject(eons)) return;
     var NODES = [], EDGES = []; // The tree
     var FORKS = {}, UNUSED = []; /// MAY display UNUSED (id='time':) differently?
+    var P_NODE;
 
     var kvs = TREE_get_keyvalues(eons);
     kvs.forEach(function(kv){
@@ -54,31 +55,31 @@ function TREE_threads (eons){
         // Certain assumptions may have been made. Eg: it is going to end fast enough for Pids
         //   to be garanteed unique identifiers.
         switch (true){
-            case /tea : 'i'/.test(kv['key']) && NODES.length == 0:
+            case /^tea : 'i'/.test(kv['key']) && P_NODE === undefined:
                 var root = {id:"0", nodeclass:"node-INPUT", title:kv['value']['Tuple'][1]};
                 NODES.push(root);
                 break;
 
-            case /tea : 'result'/.test(kv['key']) && NODES.length != 0:
-                TREE_add_leaf_simple(NODES,EDGES, "result", "node-RESULT", kv['value']['Tuple'][0]);
+            case /^tea : 'result'/.test(kv['key']) && P_NODE !== undefined:
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, "result", "node-RESULT", kv['value']['Tuple'][0], P_NODE);
                 break;
 
-            case /tcache : '(find|add)_update'/.test(kv['key']):
+            case /^tcache : '(find|add)_update'/.test(kv['key']):
                 var text = 'Adding '+ EON_str(kv['value']['Tuple'][0]) +' '
                                     + EON_str(kv['value']['Tuple'][1]) +' '
                                     + EON_str(kv['value']['Tuple'][2]) +' = '
                                     + EON_str(kv['value']['Tuple'][3]);
-                TREE_add_leaf_simple(NODES,EDGES, kv['key'], "node-CACHE", text);
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, kv['key'], "node-CACHE", text, P_NODE);
                 break;
 
-            case /tthread : 'creating_n_threads'/.test(kv['key']):
+            case /^tthread : 'creating_n_threads'/.test(kv['key']):
                 var to     = EON_str(kv['value']['Tuple'][0]);
                 var amount =         kv['value']['Tuple'][1]; // uint
                 var pids   = EON_str(kv['value']['Tuple'][2]);
                 FORKS[to] = {'n':amount, 'pids':pids};
                 break;
 
-            case /tthread : 'thread_evaluated'/.test(kv['key']):
+            case /^tthread : 'thread_evaluated'/.test(kv['key']):
                 var to     = EON_str(kv['value']['Tuple'][0]);
                 var from   = EON_str(kv['value']['Tuple'][1]['Tuple'][5]);
                 var input  = EON_str(kv['value']['Tuple'][1]['Tuple'][0]);
@@ -111,9 +112,7 @@ function TREE_threads (eons){
                 }
                 if (--FORKS[to]['n'] === 0){
                     // That was the last thread of the pool.
-                    var swapping = NODES[FORKS[to]['end_node_pos']];
-                    NODES[FORKS[to]['end_node_pos']] = NODES[NODES.length -1];
-                    NODES[NODES.length -1] = swapping;
+                    P_NODE = FORKS[to]['end'];
                     delete FORKS[to];
                 }
                 break;

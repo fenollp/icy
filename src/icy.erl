@@ -28,7 +28,7 @@ start() ->
 pass (Name, Time, Description, Thing) ->
     case whereis(?MODULE) of
         undefined -> {error,{unable_to_pass,server_down}};
-        _ -> ?MODULE ! {pass, js_encode({Name, Time, Description, Thing})}
+        _ -> ?MODULE ! {pass, js_encode({Name, Time, Description, Thing})}, ok
     end.
 
 
