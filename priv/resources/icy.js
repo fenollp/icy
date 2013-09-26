@@ -64,39 +64,53 @@ function get_keyvalues(eons){
         var desc = EON_str(eon['desc']).replace(/"/g, '\'');;
         var key = name +' : '+ desc;
         var value = eon['data'];
-        kvs.push({'key':key, 'value':value});
+        var kv = {'key':key, 'value':value};
+        kvs.push(kv);
+        console.log("KV: "+JSON.stringify(kv));
     });
     return kvs;
 };
 
 function TREE_threads (eons){
-    var nodes = {}, edges = [];
-    if (jQuery.isEmptyObject(eons)) return;
+    var nodes = [], edges = [];
+    if ($.isEmptyObject(eons)) return;
 
-    var kv = get_keyvalues(eons);
-    console.log("KV: "+JSON.stringify(kv));
+    var kvs = get_keyvalues(eons);
+    kvs.forEach(function(kv){
+        switch (true){
+            case /tea : 'i'/.test(kv['key']):
+                var previous = null;
+                var root = {id:"0", nodeclass:"node-ROOT", title:kv['value']};
+                nodes.push(root);
+                break;
+            default:
+                console.log("UNUSED: "+JSON.stringify(kv));
+                break;
+        }
+    });
 
-    var mod_map = order_eons_by_name(eons);
-    var iddd;
-    iddd = create_root(nodes, edges, eons, mod_map);
-    console.log("ROOT: "+JSON.stringify(nodes));
+    // var mod_map = order_eons_by_name(eons);
+    // var iddd;
+    // iddd = create_root(nodes, edges, eons, mod_map);
+    // console.log("ROOT: "+JSON.stringify(nodes));
+    // var n = eons.length;
+    // for (var k = 0; k < n; k += 1){
+    //     console.log("iddd = "+ iddd);
+    //     var newId = new_id();
+    //     // Create edge
+    //     edges.push(new_edge(iddd, newId));
+    //     // Create node
+    //     var data = eons[k].name + ' : ' + EON_str(eons[k].data);
+    //     nodes[newId] = {'id':newId+[], 'label':data, 'nodeclass':"type-undefined"};
+    // }
 
-    var n = eons.length;
-    for (var k = 0; k < n; k += 1){
-        console.log("iddd = "+ iddd);
-        var newId = new_id();
-        // Create edge
-        edges.push(new_edge(iddd, newId));
-        // Create node
-        var data = eons[k].name + ' : ' + EON_str(eons[k].data);
-        nodes[newId] = {'id':newId+[], 'label':data, 'nodeclass':"type-undefined"};
-    }
     // Add bottom element
     // nodes[n] = {'id':n+[], 'label':"R", 'nodeclass':"node-DATE"};
     // edges[edges.length -1] = new_edge(n -1, n);
-for (var i = 0, n = Object.keys(nodes).length; i < n; i += 1){
-    if (nodes[i] !== undefined) console.log("ID "+i);
-}
+
+// for (var i = 0, n = Object.keys(nodes).length; i < n; i += 1){
+//     if (nodes[i] !== undefined) console.log("ID "+i);
+// }
     // var mod_map = order_eons_by_name(eons);
     // // Rework tree
     // for (var k = 0; k < n; k += 1){
@@ -112,6 +126,13 @@ for (var i = 0, n = Object.keys(nodes).length; i < n; i += 1){
     //             break;
     //     }
     // }
+
+    ///TEMPORARY
+    // Move 'title': and 'subtitle': into 'label':.
+    for (var i = 0, n = nodes.length; i < n; i += 1){
+        var title = nodes[i].title || '';
+        nodes[i]["label"] = title + ((nodes[i].subtitle) ? ' | '+nodes[i].subtitle : '');
+    };
 
     renderText2(nodes, edges);
 };
