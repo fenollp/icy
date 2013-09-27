@@ -63,7 +63,7 @@ function TREE_build (eons){
                 break;
 
             case /^tea : 'result'/.test(kv['key']) && P_NODE !== undefined:
-                P_NODE = TREE_add_leaf_simple(NODES,EDGES, EON_str(kv['value']['Tuple'][0]), P_NODE), "node-RESULT");
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, EON_str(kv['value']['Tuple'][0]), "node-RESULT", P_NODE);
                 break;
 
             case /^tcache : '(find|add)_update'/.test(kv['key']):
@@ -151,10 +151,11 @@ function TREE_build (eons){
     console.log("UNUSED: "+JSON.stringify(UNUSED));
 
     ///TEMPORARY
-    // Move 'title': and 'subtitle': into 'label':.
+    // Moves 'title': and 'subtitle': into 'label':.
     for (var i = 0, n = NODES.length; i < n; i += 1){
         var title = NODES[i].title || '';
-        NODES[i]["label"] = title + ((NODES[i].subtitle) ? ' | '+NODES[i].subtitle : '');
+        var subtitle = NODES[i].subtitle;
+        NODES[i]["label"] = title + (subtitle ? ' | '+subtitle : '');
     };
 
     renderText2(NODES, EDGES);
@@ -189,6 +190,7 @@ function new_edge (from, to){
 
 function TREE_get_keyvalues(eons){
     var kvs = [];
+    eons.sort(function(l,r){ l.time < r.time ? -1 : l.time > r.time });/////
     eons.forEach(function(eon){
         var name = EON_str(eon['name']).replace(/"/g, '');
         var desc = EON_str(eon['desc']).replace(/"/g, '\'');;

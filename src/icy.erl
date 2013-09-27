@@ -14,9 +14,13 @@
 -export([m/0]).
 m()->
 icy:pass(tea, icy:time(), i, {self(),"A where var A = 1+1 end"}),
+timer:sleep(100),
 icy:pass(tthread, icy:time(), creating_n_threads, {'<0.32.0>',2,['<0.168.0>','<0.169.0>']}),
+timer:sleep(100),
 icy:pass(tthread, icy:time(), thread_evaluated, {'<0.32.0>', {1,[], {e,[{"A",{primop,'#Fun<erlang.+.2>',[1,1]}}]}, [],[],'<0.168.0>',1}, {1,1}}),
+timer:sleep(100),
 icy:pass(tthread, icy:time(), thread_evaluated, {'<0.32.0>', {1,[], {e,[{"A",{primop,'#Fun<erlang.+.2>',[1,1]}}]}, [],[],'<0.169.0>',1}, {1,1}}),
+timer:sleep(100),
 icy:pass(tea, icy:time(), result, {42,2}).
 
 %% API
