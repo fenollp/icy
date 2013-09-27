@@ -42,6 +42,9 @@ function EON_str (obj){
 
 function TREE_build (eons){
     if ($.isEmptyObject(eons)) return;
+
+    function i(str){ return '“'+ str +'”'; }
+
     var NODES = [], EDGES = []; // The tree
     var FORKS = {}, UNUSED = []; /// MAY display UNUSED (id='time':) differently?
     var P_NODE;
@@ -56,7 +59,7 @@ function TREE_build (eons){
         //   to be garanteed unique identifiers.
         switch (true){
             case /^tea : 'i'/.test(kv['key']):
-                P_NODE = TREE_add_leaf_simple(NODES,EDGES, kv['value']['Tuple'][1], "node-INPUT");
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, i(kv['value']['Tuple'][1]), "node-INPUT");
                 break;
 
             case /^tea : 'result'/.test(kv['key']) && P_NODE !== undefined:
@@ -108,9 +111,9 @@ function TREE_build (eons){
                 }
 
                 // Fill the fork
-                parent_id = TREE_add_leaf_simple(NODES,EDGES, "input",  'node-INPUT',  input,  parent_id);
-                parent_id = TREE_add_leaf_simple(NODES,EDGES, from,     'node-THREAD', null,   parent_id);
-                parent_id = TREE_add_leaf_simple(NODES,EDGES, "output", 'node-RESULT', output, parent_id);
+                parent_id = TREE_add_leaf_simple(NODES,EDGES, i(input), 'node-INPUT',  null, parent_id);
+                parent_id = TREE_add_leaf_simple(NODES,EDGES, from,     'node-THREAD', null, parent_id);
+                parent_id = TREE_add_leaf_simple(NODES,EDGES, output,   'node-RESULT', null, parent_id);
 
                 // Attach fork to pool's end
                 if (FORKS[to]['end'] === undefined){
@@ -135,8 +138,8 @@ function TREE_build (eons){
                 var args = kv['value']['Tuple'][1]; // …[0] and …[1] only
                 var input  = EON_str(args[0]) +' '+op+' '+ EON_str(args[1]);
                 var output = EON_str(kv['value']['Tuple'][2]);
-                P_NODE = TREE_add_leaf_simple(NODES,EDGES, "locally", 'node-INPUT', input, P_NODE);
-                P_NODE = TREE_add_leaf_simple(NODES,EDGES, output,    'node-RESULT', null, P_NODE);
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, i(input), 'node-INPUT',  null, P_NODE);
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, output,   'node-RESULT', null, P_NODE);
                 break;
 
             default:
