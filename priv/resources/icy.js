@@ -60,16 +60,29 @@ function TREE_build (eons){
                 break;
 
             case /^tea : 'result'/.test(kv['key']) && P_NODE !== undefined:
-                P_NODE = TREE_add_leaf_simple(NODES,EDGES, "result", "node-RESULT",
-                    EON_str(kv['value']['Tuple'][0]), P_NODE);
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, EON_str(kv['value']['Tuple'][0]), P_NODE), "node-RESULT");
                 break;
 
             case /^tcache : '(find|add)_update'/.test(kv['key']):
-                var text = 'Adding '+ EON_str(kv['value']['Tuple'][0]) +' '
-                                    + EON_str(kv['value']['Tuple'][1]) +' '
-                                    + EON_str(kv['value']['Tuple'][2]) +' = '
-                                    + EON_str(kv['value']['Tuple'][3]);
-                P_NODE = TREE_add_leaf_simple(NODES,EDGES, kv['key'], "node-CACHE", text, P_NODE);
+                var title, subtitle;
+                if (kv['key'] === "tcache : 'find_update'"){
+                    title = 'Cache find';
+                    var rhs = ' = '+ EON_str(kv['value']['Tuple'][3]);
+                    if (/^{"calc",/.test(EON_str(kv['value']['Tuple'][3]))){
+                        rhs = ' : '+ 'no entry';
+                    }
+                    subtitle = EON_str(kv['value']['Tuple'][0]) +' '
+                             + EON_str(kv['value']['Tuple'][1]) +' '
+                             + EON_str(kv['value']['Tuple'][2]);
+                }
+                else if (kv['key'] === "tcache : 'add_update'"){
+                    title = 'Cache add';
+                    subtitle = EON_str(kv['value']['Tuple'][0]) +' '
+                             + EON_str(kv['value']['Tuple'][1]) +' '
+                             + EON_str(kv['value']['Tuple'][2]) +' = '
+                             + EON_str(kv['value']['Tuple'][3]);
+                }
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, title, "node-CACHE", subtitle, P_NODE);
                 break;
 
             case /^tthread : 'creating_n_threads'/.test(kv['key']):
