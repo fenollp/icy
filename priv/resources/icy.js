@@ -83,7 +83,7 @@ function TREE_build (eons){
                 var to     = EON_str(kv['value']['Tuple'][0]);
                 var from   = EON_str(kv['value']['Tuple'][1]['Tuple'][5]);
                 var input  = EON_str(kv['value']['Tuple'][1]['Tuple'][0]);
-                var output = EON_str(kv['value']['Tuple'][2]);
+                var output = EON_str(kv['value']['Tuple'][2]['Tuple'][0]);
                 var parent_id;
                 if (FORKS[to]['start'] === undefined){
                     // Pool start node does not exist yet.
