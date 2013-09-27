@@ -11,10 +11,11 @@ function EON (e_string) { // Erlang Object Notation :d
 
 function EONS_append (neweon, tag) {
     function new_line (obj){
+        function pre (str){ return str.replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
         return  '<tr>' +
                     '<td class="  left-text"><pre>'+ obj.name +' “'+obj.desc+'”' +'</pre></td>'+
                     '<td class="center-text"><pre>'+ ' ⟼ '                      +'</pre></td>'+
-                    '<td class=" right-text"><pre>'+ EON_str(obj.data)           +'</pre></td>'+
+                    '<td class=" right-text"><pre>'+ pre(EON_str(obj.data))      +'</pre></td>'+
                 '</tr>';
     }
     var item = $(new_line(neweon));
