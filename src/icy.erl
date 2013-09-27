@@ -11,8 +11,13 @@
 
 -export([test_pass/0]). %% Used when testing the bridge.
 
--define(G, 1000000000).
--define(M,    1000000).
+-export([m/0]).
+m()->
+icy:pass(tea, icy:time(), i, {self(),"A where var A = 1+1 end"}),
+icy:pass(tthread, icy:time(), creating_n_threads, {'<0.32.0>',2,['<0.168.0>','<0.169.0>']}),
+icy:pass(tthread, icy:time(), thread_evaluated, {'<0.32.0>', {1,[], {e,[{"A",{primop,'#Fun<erlang.+.2>',[1,1]}}]}, [],[],'<0.168.0>',1}, {1,1}}),
+icy:pass(tthread, icy:time(), thread_evaluated, {'<0.32.0>', {1,[], {e,[{"A",{primop,'#Fun<erlang.+.2>',[1,1]}}]}, [],[],'<0.169.0>',1}, {1,1}}),
+icy:pass(tea, icy:time(), result, {42,2}).
 
 %% API
 
@@ -34,8 +39,9 @@ pass (Name, Time, Description, Thing) ->
 
 -spec time () -> N::pos_integer().
 time () ->
+    M = 1000 * 1000,
     {A, B, C} = os:timestamp(),
-    ?G * A + ?M * B + C.
+    M * M * A + M * B + C.
 
 
 test_pass () ->

@@ -9,18 +9,17 @@ function EON (e_string) { // Erlang Object Notation :d
             data: obj["Erlang"]["Tuple"][0]};
 };
 
-function EONS_print (eons, tag, placeholder, sep) {
-    // Sort eons by timestamp
-    eons = eons.sort(function(l,r){
-        if (l.time < r.time) return -1;
-        if (l.time > r.time) return  1;
-        return 0;
-    });
-    tag.text(placeholder);
-    eons.forEach(function(obj){
-        tag.text(tag.text() +
-            obj.name + ' “'+obj.desc+'”' +' ⟼ '+ EON_str(obj.data) + sep);
-    });
+function EONS_append (neweon, tag) {
+    function new_line (obj){
+        return  '<tr>' +
+                    '<td class="  left-text"><pre>'+ obj.name +' “'+obj.desc+'”' +'</pre></td>'+
+                    '<td class="center-text"><pre>'+ ' ⟼ '                      +'</pre></td>'+
+                    '<td class=" right-text"><pre>'+ EON_str(obj.data)           +'</pre></td>'+
+                '</tr>';
+    }
+    var item = $(new_line(neweon));
+    item.hide().appendTo(tag).show('normal');
+    $("html, body").animate({scrollTop: item.offset().top -($(window).height() -item.outerHeight())}, 0);
 };
 
 function EON_str (obj){
@@ -40,7 +39,7 @@ function EON_str (obj){
 
 
 
-function TREE_threads (eons){
+function TREE_build (eons){
     if ($.isEmptyObject(eons)) return;
     var NODES = [], EDGES = []; // The tree
     var FORKS = {}, UNUSED = []; /// MAY display UNUSED (id='time':) differently?

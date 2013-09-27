@@ -57,13 +57,12 @@
             // onmessage
             bullet.onmessage = function(e){
                 if (e.data != 'pong'){
+                    var textview = $('#text-view');
                     var obj = EON(e.data);
                     eons.push(obj);
-                    var pre = $('#text-view');
-                    if (pre.is(':visible')){
-                        EONS_print(eons, pre, "Events recap:\n", '\n');
-                    } else {
-                        TREE_threads(eons);
+                    EONS_append(obj, textview);
+                    if (!textview.is(':visible')){
+                        TREE_build(eons);
                     }
                 }
             };
@@ -81,24 +80,23 @@
         });
 
         $('#toggle-view').on('click', function(){
-            var pre = $('#text-view');
-            var tre = $('#tree-view');
-            if (false === pre.is(':visible')){
+            var textview = $('#text-view');
+            var treeview = $('#tree-view');
+            if (false === textview.is(':visible')){
                 // View = text
-                tre.toggle();
-                pre.toggle();
+                treeview.toggle();
+                textview.toggle();
                 $('html, body').css({overflow: "auto"});
-                EONS_print(eons, pre, "Events recap:\n", '\n');
             } else {
                 // View = tree
-                tre.toggle();
-                pre.toggle();
+                treeview.toggle();
+                textview.toggle();
                 $('html, body').css({overflow: "hidden"});
-                TREE_threads(eons);
+                TREE_build(eons);
             }
         });
         $('#tree-view').toggle(false);
-        $('#toggle-view').trigger('click'); // Makes tree-view default.
+        //$('#toggle-view').trigger('click'); // Makes tree-view default.
 
         $('#bar').on('click', function(){
             var bar = $('#bar');
@@ -115,6 +113,12 @@
         header { background-color:lightgreen; text-align:center; height:30px; }
         header > button#status { float:left; height:30px; background-color:cyan; }
         header > button#toggle-view { float:right; height:30px; }
+
+        pre { border:0; padding:0; margin:0; font-size:13px; white-space:pre; background:none; } /*word-break:break all;*/
+        table { width:100%; height:100%; align:center; valign:middle; }
+        .left-text { text-align:right;/* width:50%;*/ }
+        .right-text { text-align:left;/* width:50%;*/ }
+        .center-text { vertical-align:top; /*display:none;*/ }
     </style>
 
 </head>
@@ -126,16 +130,9 @@
         <button id="toggle-view">Toggle tree</button>
     </header>
 
-    <table width="100%" height="100%">
-        <tbody>
-            <tr>
-                <td align="center" valign="middle">
-<pre id="text-view">
-Events recap:
-</pre>
-                </td>
-            </tr>
-        </tbody>
+    <table>
+        <!-- <theader>Events recap:</theader> -->
+        <tbody id="text-view"></tbody>
     </table>
 
     <script type="text/javascript" src="rsc/icy.js"></script>
