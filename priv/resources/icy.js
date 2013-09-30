@@ -206,7 +206,6 @@ function new_edge (from, to){
 
 function TREE_get_keyvalues(eons){
     var kvs = [];
-    eons.sort(function(l,r){ l.time < r.time ? -1 : l.time > r.time });/////
     eons.forEach(function(eon){
         var name = EON_str(eon['name']).replace(/"/g, '');
         var desc = EON_str(eon['desc']).replace(/"/g, '\'');;
