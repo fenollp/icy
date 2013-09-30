@@ -59,33 +59,36 @@ function TREE_build (eons){
         //   to be garanteed unique identifiers.
         switch (true){
             case /^tea : 'i'/.test(kv['key']):
-                P_NODE = TREE_add_leaf_simple(NODES,EDGES, i(kv['value']['Tuple'][1]), "node-INPUT", null, P_NODE);
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES,
+                    i(kv['value']['Tuple'][1]), "node-INPUT", null, P_NODE);
                 break;
 
             case /^tea : 'result'/.test(kv['key']) && P_NODE !== undefined:
-                P_NODE = TREE_add_leaf_simple(NODES,EDGES, EON_str(kv['value']['Tuple'][0]), "node-RESULT", null, P_NODE);
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES,
+                    EON_str(kv['value']['Tuple'][0]), "node-RESULT", null, P_NODE);
                 break;
 
-            case /^tcache : '(find|add)_update'/.test(kv['key']):
-                var title, subtitle;
-                if (kv['key'] === "tcache : 'find_update'"){
-                    title = 'Cache find';
-                    var rhs = ' = '+ EON_str(kv['value']['Tuple'][3]);
-                    if (/^{"calc",/.test(EON_str(kv['value']['Tuple'][3]))){
-                        rhs = ' : '+ 'no entry';
-                    }
-                    subtitle = EON_str(kv['value']['Tuple'][0]) +' '
-                             + EON_str(kv['value']['Tuple'][1]) +' '
-                             + EON_str(kv['value']['Tuple'][2]);
+            case /^tcache : 'find'/.test(kv['key']):
+                var calc = EON_str(kv['value']['Tuple'][1]['Tuple'][0]);
+                var rhs;
+                if (/^{"calc",/.test(calc)){
+                    rhs = ' : '+ 'no entry';
+                } else {
+                    rhs = ' : '+ calc;
                 }
-                else if (kv['key'] === "tcache : 'add_update'"){
-                    title = 'Cache add';
-                    subtitle = EON_str(kv['value']['Tuple'][0]) +' '
+                var subtitle =         kv['value']['Tuple'][0]['Tuple'][0]  +' ' // variable
+                             + EON_str(kv['value']['Tuple'][0]['Tuple'][1]) +' '
+                             + EON_str(kv['value']['Tuple'][0]['Tuple'][2]) +' '
+                             + rhs;
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, 'Cache find', "node-CACHE", subtitle, P_NODE);
+                break;
+
+            case /^tcache : 'add_update'/.test(kv['key']):
+                var subtitle =         kv['value']['Tuple'][0]  +' ' // variable
                              + EON_str(kv['value']['Tuple'][1]) +' '
                              + EON_str(kv['value']['Tuple'][2]) +' = '
                              + EON_str(kv['value']['Tuple'][3]);
-                }
-                P_NODE = TREE_add_leaf_simple(NODES,EDGES, title, "node-CACHE", subtitle, P_NODE);
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, 'Cache add', "node-CACHE", subtitle, P_NODE);
                 break;
 
             case /^tthread : 'creating_n_threads'/.test(kv['key']):

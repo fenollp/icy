@@ -55,7 +55,7 @@ x ()->
     timer:sleep(100),
     icy:pass(tcore, icy:time(), primop_apply, {'#Fun<erlang.+.2>',[1,1],2}),
     timer:sleep(100),
-    icy:pass(tcache, icy:time(), add, {"A",[],[],2}),
+    icy:pass(tcache, icy:time(), add_update, {"A",[],[],2}),
     timer:sleep(100),
     icy:pass(tcache, icy:time(), find, {{"A",[],[],[0],0},{2,2}}),
     timer:sleep(100),
