@@ -146,6 +146,7 @@ function TREE_build (eons){
                 break;
 
             default:
+                console.log("NOT USING "+ JSON.stringify(kv));
                 UNUSED.push(kv);
                 break;
         }
