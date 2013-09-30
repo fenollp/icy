@@ -59,7 +59,7 @@ function TREE_build (eons){
         //   to be garanteed unique identifiers.
         switch (true){
             case /^tea : 'i'/.test(kv['key']):
-                P_NODE = TREE_add_leaf_simple(NODES,EDGES, i(kv['value']['Tuple'][1]), "node-INPUT");
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, i(kv['value']['Tuple'][1]), "node-INPUT", null, P_NODE);
                 break;
 
             case /^tea : 'result'/.test(kv['key']) && P_NODE !== undefined:
