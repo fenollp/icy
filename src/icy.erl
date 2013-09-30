@@ -9,19 +9,9 @@
 -export([pass/4]).
 -export([time/0]).
 
--export([test_pass/0]). %% Used when testing the bridge.
-
--export([m/0]).
-m()->
-icy:pass(tea, icy:time(), i, {self(),"A where var A = 1+1 end"}),
-timer:sleep(100),
-icy:pass(tthread, icy:time(), creating_n_threads, {'<0.32.0>',2,['<0.168.0>','<0.169.0>']}),
-timer:sleep(100),
-icy:pass(tthread, icy:time(), thread_evaluated, {'<0.32.0>', {1,[], {e,[{"A",{primop,'#Fun<erlang.+.2>',[1,1]}}]}, [],[],'<0.168.0>',1}, {1,1}}),
-timer:sleep(100),
-icy:pass(tthread, icy:time(), thread_evaluated, {'<0.32.0>', {1,[], {e,[{"A",{primop,'#Fun<erlang.+.2>',[1,1]}}]}, [],[],'<0.169.0>',1}, {1,1}}),
-timer:sleep(100),
-icy:pass(tea, icy:time(), result, {42,2}).
+%% Used when testing the bridge.
+-export([test_pass/0]).
+-export([x/0]).
 
 %% API
 
@@ -50,6 +40,27 @@ time () ->
 
 test_pass () ->
     icy:pass(test, icy:time(), "this is bla", {bla,bla,icy:time()}).
+
+x ()->
+    icy:pass(tea, icy:time(), i, {self(),"A where var A = 1+1 end"}),
+    timer:sleep(100),
+    icy:pass(tcache, icy:time(), find_update, {"A",[],[],{"calc",[0]}}),
+    icy:pass(tcache, icy:time(), find, {{"A",[],[],[0],0},{{"calc",[0]},1}}),
+    timer:sleep(100),
+    icy:pass(tthread, icy:time(), creating_n_threads, {self(),2,['<0.168.0>','<0.169.0>']}),
+    timer:sleep(100),
+    icy:pass(tthread, icy:time(), thread_evaluated, {self(), {1,[], {e,[{"A",{primop,'#Fun<erlang.+.2>',[1,1]}}]}, [],[],'<0.168.0>',1}, {1,1}}),
+    timer:sleep(100),
+    icy:pass(tthread, icy:time(), thread_evaluated, {self(), {1,[], {e,[{"A",{primop,'#Fun<erlang.+.2>',[1,1]}}]}, [],[],'<0.169.0>',1}, {1,1}}),
+    timer:sleep(100),
+    icy:pass(tcore, icy:time(), primop_apply, {'#Fun<erlang.+.2>',[1,1],2}),
+    timer:sleep(100),
+    icy:pass(tcache, icy:time(), add, {"A",[],[],2}),
+    timer:sleep(100),
+    icy:pass(tcache, icy:time(), find, {{"A",[],[],[0],0},{2,2}}),
+    timer:sleep(100),
+    icy:pass(tea, icy:time(), result, {2,2}).
+
 
 %% Internals
 
