@@ -63,7 +63,7 @@ function TREE_build (eons){
                 break;
 
             case /^tea : 'result'/.test(kv['key']) && P_NODE !== undefined:
-                P_NODE = TREE_add_leaf_simple(NODES,EDGES, EON_str(kv['value']['Tuple'][0]), "node-RESULT", P_NODE);
+                P_NODE = TREE_add_leaf_simple(NODES,EDGES, EON_str(kv['value']['Tuple'][0]), "node-RESULT", null, P_NODE);
                 break;
 
             case /^tcache : '(find|add)_update'/.test(kv['key']):
