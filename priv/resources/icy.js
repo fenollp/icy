@@ -16,6 +16,7 @@ function EONS_append (neweon, tag) {
                     '<td class="  left-text"><pre>'+ obj.name +' “'+obj.desc+'”' +'</pre></td>'+
                     '<td class="center-text"><pre>'+ ' ⟼ '                      +'</pre></td>'+
                     '<td class=" right-text"><pre>'+ pre(EON_str(obj.data))      +'</pre></td>'+
+                    '<td class="id-text">'+          obj.time                          +'</td>'+
                 '</tr>';
     }
     var item = $(new_line(neweon));
@@ -112,12 +113,10 @@ function TREE_build (eons){
                 } else {
                     parent_id = FORKS[to]['start'];
                 }
-
                 // Fill the fork
                 parent_id = TREE_add_leaf_simple(NODES,EDGES, i(input), 'node-INPUT',  null, parent_id);
                 parent_id = TREE_add_leaf_simple(NODES,EDGES, from,     'node-THREAD', null, parent_id);
                 parent_id = TREE_add_leaf_simple(NODES,EDGES, output,   'node-RESULT', null, parent_id);
-
                 // Attach fork to pool's end
                 if (FORKS[to]['end'] === undefined){
                     // Pool finish node does not exist yet.
@@ -150,9 +149,8 @@ function TREE_build (eons){
                 UNUSED.push(kv);
                 break;
         }
-    } catch(e){ console.log("ILL FORMED: (Got '"+e+"')"+JSON.stringify(kv)); }
+    } catch(e){ console.log("ILL FORMED: (Got '"+e+"') "+JSON.stringify(kv)); }
     });
-    console.log("UNUSED: "+JSON.stringify(UNUSED));
 
     ///TEMPORARY
     // Moves 'title': and 'subtitle': into 'label':.
@@ -163,6 +161,7 @@ function TREE_build (eons){
     };
 
     renderText2(NODES, EDGES);
+    return UNUSED;
 };
 
 function TREE_add_leaf_simple(nodes, edges, Ntitle, Nclass, Nsubtitle, parent_node_id){
@@ -181,11 +180,24 @@ function TREE_add_leaf_simple(nodes, edges, Ntitle, Nclass, Nsubtitle, parent_no
     return n_node_id;
 };
 
-var new_id = function(){
-    // All my JS wat : http://stackoverflow.com/a/1535650/1418165
-    var counter = 0;
-    return function(){ return counter++ };
-}();
+function EONS_set_unused (unused){
+    unused = unused || [];
+    // Set ‘unused’ flag in var eons.
+    for (var i = 0, n = unused.length; i < n; i += 1){
+        $('.id-text').each(function(index, tag){
+            var time = $(this);
+            if (time.text() == unused[i]['time']){
+                time.parent().addClass('unused-text');
+            }
+        });
+    }
+}
+
+// var new_id = function(){
+//     // All my JS wat : http://stackoverflow.com/a/1535650/1418165
+//     var counter = 0;
+//     return function(){ return counter++ };
+// }();
 
 function new_edge (from, to){
     // from, to: must be integers or strings of integers.
@@ -202,14 +214,13 @@ function TREE_get_keyvalues(eons){
         var value = eon['data'];
         var kv = {'key':key, 'value':value, 'time':eon['time']};
         kvs.push(kv);
-        console.log("KV: "+JSON.stringify(kv));
     });
     return kvs;
 };
 
 function renderText2(nodes, edges){
-    console.log(JSON.stringify({"nodes":nodes}));////////////////////////////////////////////////////////////////
-    console.log(JSON.stringify({"edges":edges}));////////////////////////////////////////////////////////////////
+    // console.log(JSON.stringify({"nodes":nodes}));////////////////////////////////////////////////////////////////
+    // console.log(JSON.stringify({"edges":edges}));////////////////////////////////////////////////////////////////
     renderJSObjsToD3(nodes, edges, ".main-svg");
 };
 

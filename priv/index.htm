@@ -62,7 +62,8 @@
                     eons.push(obj);
                     EONS_append(obj, textview);
                     if (!textview.is(':visible')){
-                        TREE_build(eons);
+                        var unused = TREE_build(eons);
+                        EONS_set_unused(unused);
                     }
                 }
             };
@@ -92,7 +93,8 @@
                 treeview.toggle();
                 textview.toggle();
                 $('html, body').css({overflow: "hidden"});
-                TREE_build(eons);
+                var unused = TREE_build(eons);
+                EONS_set_unused(unused);
             }
         });
         $('#tree-view').toggle(false);
@@ -116,9 +118,11 @@
 
         pre { border:0; padding:0; margin:0; font-size:13px; white-space:pre; background:none; } /*word-break:break all;*/
         table { width:100%; height:100%; align:center; valign:middle; }
-        .left-text { text-align:right;/* width:50%;*/ }
-        .right-text { text-align:left;/* width:50%;*/ }
-        .center-text { vertical-align:top; /*display:none;*/ }
+        .left-text { text-align:right; }
+        .right-text { text-align:left; }
+        .center-text { vertical-align:top; }
+        .unused-text { background-color:lightcyan; }
+        .id-text { display:none; }
     </style>
 
 </head>
